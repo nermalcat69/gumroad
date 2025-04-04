@@ -7,7 +7,7 @@ describe PaypalController, :vcr do
   include AffiliateCookie
 
   let(:window_location) { "https://127.0.0.1:3000/l/test?wanted=true" }
-  let(:paypal_auth_token) { "Bearer A21AAF5T7EesDXLWLuLRvWyMYLvqXkVxpL_exqSEColXRRl47BxzjIKhdWgw-rD2NT_hXvDyKa1bz9FBNCP24WDrd33dtD0kg" }
+  let(:paypal_auth_token) { "Bearer A21AAF5T7EesDXLWLuLRvWyMYLvqXkVxpL_exqSEColXRRl47BxzjIKhdWgw-rD2NT_hXvDyKa1bz9FBNCP24WDrSAMPLE }
 
   before do
     allow_any_instance_of(PaypalPartnerRestCredentials).to receive(:auth_token).and_return(paypal_auth_token)

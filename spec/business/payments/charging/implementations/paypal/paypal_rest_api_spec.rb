@@ -2,7 +2,7 @@
 
 describe PaypalRestApi, :vcr do
   let(:api_object) { PaypalRestApi.new }
-  let(:paypal_auth_token) { "Bearer A21AAI6Qq9kon0Z2N7R6ed3OXwkNxFraroKppGHWHJUU5w-MlQBKKcZd_WlHbQJgh79HLaWQmEnRyj3GZdRW9FMqRbbSkcmBA" }
+  let(:paypal_auth_token) { "Bearer A21AAI6Qq9kon0Z2N7R6ed3OXwkNxFraroKppGHWHJUU5w-MlQBKKcZd_WlHbQJgh79HLaWQmEnRyj3GZdRW9FMqSAMPLE }
 
   # Business accounts from our sandbox setup and their merchant IDs generated after manually completing onboarding
   let(:creator_email) { "sb-c7jpx2385730@business.example.com" }
@@ -145,7 +145,7 @@ describe PaypalRestApi, :vcr do
       charge.purchases << create(:purchase, price_cents: 200, fee_cents: 48, link: create(:product, unique_permalink: "h"))
       charge.purchases << create(:purchase, price_cents: 800, fee_cents: 102, link: create(:product, unique_permalink: "c"))
 
-      paypal_auth_token = "Bearer A21AAIwPw4niCFO4ziUTNt46mLva8lrt4cmMackDZFvFNVqEIpkEMzh6z-tt5cb2Sw6YcPsT1kVfuBdsVkAnZcAx9XFiMiGIw"
+      paypal_auth_token = "Bearer A21AAIwPw4niCFO4ziUTNt46mLva8lrt4cmMackDZFvFNVqEIpkEMzh6z-tt5cb2Sw6YcPsT1kVfuBdsVkAnZcAxSAMPLE
       allow_any_instance_of(PaypalPartnerRestCredentials).to receive(:auth_token).and_return(paypal_auth_token)
       allow_any_instance_of(Charge).to receive(:external_id).and_return("G_-mnBf9b1j9A7a4ub4nFQ==")
 

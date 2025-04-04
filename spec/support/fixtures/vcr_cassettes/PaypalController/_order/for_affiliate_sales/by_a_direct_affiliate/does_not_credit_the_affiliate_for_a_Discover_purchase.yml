@@ -13,7 +13,7 @@ http_interactions:
       Accept-Language:
       - en_US
       Authorization:
-      - Bearer A21AAF5T7EesDXLWLuLRvWyMYLvqXkVxpL_exqSEColXRRl47BxzjIKhdWgw-rD2NT_hXvDyKa1bz9FBNCP24WDrd33dtD0kg
+      - Bearer A21AAF5T7EesDXLWLuLRvWyMYLvqXkVxpL_exqSEColXRRl47BxzjIKhdWgw-rD2NT_hXvDyKa1bz9FBNCP24WDSAMPLE
       Content-Type:
       - application/json
       Paypal-Partner-Attribution-Id:

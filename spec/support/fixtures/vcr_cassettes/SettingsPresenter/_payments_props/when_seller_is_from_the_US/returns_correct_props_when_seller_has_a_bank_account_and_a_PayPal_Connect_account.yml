@@ -70,7 +70,7 @@ http_interactions:
       Content-Type:
       - application/json
       Authorization:
-      - Bearer A21AAKAF3e4o1GA6Wl35ba1eM923bQV2AhsETRA--Zn9kjSgl79Xks03F4q2Pi5hzL6dWScTJzd1MOLdbeX_Q60qYAQsYCOxQ
+      - Bearer A21AAKAF3e4o1GA6Wl35ba1eM923bQV2AhsETRA--Zn9kjSgl79Xks03F4q2Pi5hzL6dWScTJzd1MOLdbeX_Q60SAMPLE
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -119,7 +119,7 @@ http_interactions:
       Content-Type:
       - application/json
       Authorization:
-      - Bearer A21AAKAF3e4o1GA6Wl35ba1eM923bQV2AhsETRA--Zn9kjSgl79Xks03F4q2Pi5hzL6dWScTJzd1MOLdbeX_Q60qYAQsYCOxQ
+      - Bearer A21AAKAF3e4o1GA6Wl35ba1eM923bQV2AhsETRA--Zn9kjSgl79Xks03F4q2Pi5hzL6dWScTJzd1MOLdbeX_Q60SAMPLE
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:

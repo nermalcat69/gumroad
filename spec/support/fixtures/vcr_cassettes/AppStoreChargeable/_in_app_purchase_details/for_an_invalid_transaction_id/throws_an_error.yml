@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Authorization:
-      - Bearer eyJraWQiOiJVNUZTS0hOM1VRIiwiYWxnIjoiRVMyNTYifQ.eyJleHAiOjE3MjAwMjQ4ODQsImlzcyI6IjY5YTZkZTc5LTEzNTYtNDdlMy1lMDUzLTViOGM3YzExYTRkMSIsImF1ZCI6ImFwcHN0b3JlY29ubmVjdC12MSIsImJpZCI6ImNvbS5HUkQuR3Vtcm9hZCJ9.PGvtv52hA7A0ak2QHHVUnVnCiXjbh-3JyElaon_q8R4C1VFc5ftGMLRhYIL-vnXnlLP5jZagRf-1r0jtfyOdDw
+      - Bearer eyJraWQiOiJVNUZTS0hOM1VRIiwiYWxnIjoiRVMyNTYifQ.eyJleHAiOjE3MjAwMjQ4ODQsImlzcyI6IjY5YTZkZTc5LTEzNTYtNDdlMy1lMDUzLTViOGM3YzExYTRkMSIsImF1ZCI6ImFwcHN0b3JlY29ubmVjdC12MSIsImJpZCI6ImNvbS5HUkQuR3Vtcm9hZCJ9.PGvtv52hA7A0ak2QHHVUnVnCiXjbh-3JyElaon_q8R4C1VFc5ftGMLRhYIL-vnXnlLP5jZagRf-1SAMPLE
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:

@@ -12,7 +12,7 @@ require "spec_helper"
 
 describe PaypalChargeProcessor, :vcr do
   let(:paypal_auth_token) do
-    "Bearer A21AAI9v6NTs3Y42Ufo-5Q-cskFZtTLkOodRO1uJQvdaWnsbiCt078vvzYnSy5X1gLFwGZIyhtT6D_EUZyyyp_YjB9CudeK7w"
+    "Bearer A21AAI9v6NTs3Y42Ufo-5Q-cskFZtTLkOodRO1uJQvdaWnsbiCt078vvzYnSy5X1gLFwGZIyhtT6D_EUZyyyp_YjSAMPLE
   end
 
   before do
@@ -608,7 +608,7 @@ describe PaypalChargeProcessor, :vcr do
 
       it "does not raise error and returns PaypalCharge when transaction is complete" do
         paypal_auth_token =
-          "Bearer A21AAIW-mWqtYFHC_juLm6Ded4UvrZmFdAprGbqIsnyf9Tjay2qdeZqLzZnjGJfNAcQvdNS4Rx0Hgbyu2ukMDARwWHEEBdh1Q"
+          "Bearer A21AAIW-mWqtYFHC_juLm6Ded4UvrZmFdAprGbqIsnyf9Tjay2qdeZqLzZnjGJfNAcQvdNS4Rx0Hgbyu2ukMDARwSAMPLE
         allow_any_instance_of(PaypalPartnerRestCredentials).to receive(:auth_token).and_return(paypal_auth_token)
 
         charge_intent = subject.create_payment_intent_or_charge!(
@@ -622,7 +622,7 @@ describe PaypalChargeProcessor, :vcr do
 
       it "does not raise error and returns PaypalCharge when transaction is pending review" do
         paypal_auth_token =
-          "Bearer A21AAIW-mWqtYFHC_juLm6Ded4UvrZmFdAprGbqIsnyf9Tjay2qdeZqLzZnjGJfNAcQvdNS4Rx0Hgbyu2ukMDARwWHEEBdh1Q"
+          "Bearer A21AAIW-mWqtYFHC_juLm6Ded4UvrZmFdAprGbqIsnyf9Tjay2qdeZqLzZnjGJfNAcQvdNS4Rx0Hgbyu2ukMDARwSAMPLE
         allow_any_instance_of(PaypalPartnerRestCredentials).to receive(:auth_token).and_return(paypal_auth_token)
 
         allow(PaypalChargeProcessor).to receive(:create_order).and_return("80T882348N361143U")
@@ -697,7 +697,7 @@ describe PaypalChargeProcessor, :vcr do
         @charge.purchases << create(:purchase)
         @charge.purchases << create(:purchase)
         paypal_auth_token =
-          "Bearer A21AAIwPw4niCFO4ziUTNt46mLva8lrt4cmMackDZFvFNVqEIpkEMzh6z-tt5cb2Sw6YcPsT1kVfuBdsVkAnZcAx9XFiMiGIw"
+          "Bearer A21AAIwPw4niCFO4ziUTNt46mLva8lrt4cmMackDZFvFNVqEIpkEMzh6z-tt5cb2Sw6YcPsT1kVfuBdsVkAnZcAxSAMPLE
         allow_any_instance_of(PaypalPartnerRestCredentials).to receive(:auth_token).and_return(paypal_auth_token)
       end
 

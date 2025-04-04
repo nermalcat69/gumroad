@@ -56,7 +56,7 @@ http_interactions:
       Content-Type:
       - application/json
       Authorization:
-      - Bearer A21AAEaf1CXid_m_EZyKA6HPpg2Z1qvRd1RCxYUcvpqDlVsFtaFs_4LDUPkvm8I01f2sMrcFjvTJqJ2vNtF4ydDwIP-CQRyqQ
+      - Bearer A21AAEaf1CXid_m_EZyKA6HPpg2Z1qvRd1RCxYUcvpqDlVsFtaFs_4LDUPkvm8I01f2sMrcFjvTJqJ2vNtF4ydDSAMPLE
   response:
     status:
       code: 201

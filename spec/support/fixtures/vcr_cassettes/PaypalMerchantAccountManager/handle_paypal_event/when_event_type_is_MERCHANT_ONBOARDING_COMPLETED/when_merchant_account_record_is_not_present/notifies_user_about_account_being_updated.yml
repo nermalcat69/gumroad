@@ -64,7 +64,7 @@ http_interactions:
       Content-Type:
       - application/json
       Authorization:
-      - Bearer A21AALOriFTn_euJ-6wV9zkIuKl5HPjcWH23dT-DJ2o-LjkezRIefJO0DAQYn_0rcUwGb9htm9Z9BEy1bgGnOUoF09QqtPn8g
+      - Bearer A21AALOriFTn_euJ-6wV9zkIuKl5HPjcWH23dT-DJ2o-LjkezRIefJO0DAQYn_0rcUwGb9htm9Z9BEy1bgGnOUoSAMPLE
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:

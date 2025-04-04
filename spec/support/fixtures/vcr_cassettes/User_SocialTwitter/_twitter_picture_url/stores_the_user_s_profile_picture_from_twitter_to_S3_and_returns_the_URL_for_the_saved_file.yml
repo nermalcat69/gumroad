@@ -84,7 +84,7 @@ http_interactions:
       User-Agent:
       - TwitterRubyGem/5.17.0
       Authorization:
-      - Bearer AAAAAAAAAAAAAAAAAAAAAG8sQAAAAAAATVKrheAhORxFqHbbYrZKdu28BYA%3DGkn2MGrX8Vx4zcV4ZKFr0nrFdyltrv81RDiX5kX3dOd1BFthel
+      - Bearer AAAAAAAAAAAAAAAAAAAAAG8sQAAAAAAATVKrheAhORxFqHbbYrZKdu28BYA%3DGkn2MGrX8Vx4zcV4ZKFr0nrFdyltrv81RDiX5kX3SAMPLE
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
   response:

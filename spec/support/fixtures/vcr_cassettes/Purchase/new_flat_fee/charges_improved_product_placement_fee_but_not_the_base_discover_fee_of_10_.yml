@@ -1814,7 +1814,7 @@ http_interactions:
       Accept-Language:
       - en_US
       Authorization:
-      - Bearer A21AAKAOf5InDr_R0CdPn9b7dfbDB5vfTDiNtsAMC6h54cv5kk0xvPOX3aZ4Ksj_b8-4aBRZM0ZfF0L6KBQdrHZuk4LKqQVCA
+      - Bearer A21AAKAOf5InDr_R0CdPn9b7dfbDB5vfTDiNtsAMC6h54cv5kk0xvPOX3aZ4Ksj_b8-4aBRZM0ZfF0L6KBQdrHZSAMPLE
       Content-Type:
       - application/json
       Paypal-Partner-Attribution-Id:
@@ -1882,7 +1882,7 @@ http_interactions:
       Accept-Language:
       - en_US
       Authorization:
-      - Bearer A21AAKAOf5InDr_R0CdPn9b7dfbDB5vfTDiNtsAMC6h54cv5kk0xvPOX3aZ4Ksj_b8-4aBRZM0ZfF0L6KBQdrHZuk4LKqQVCA
+      - Bearer A21AAKAOf5InDr_R0CdPn9b7dfbDB5vfTDiNtsAMC6h54cv5kk0xvPOX3aZ4Ksj_b8-4aBRZM0ZfF0L6KBQdrHZSAMPLE
       Content-Type:
       - application/json
       Paypal-Partner-Attribution-Id:

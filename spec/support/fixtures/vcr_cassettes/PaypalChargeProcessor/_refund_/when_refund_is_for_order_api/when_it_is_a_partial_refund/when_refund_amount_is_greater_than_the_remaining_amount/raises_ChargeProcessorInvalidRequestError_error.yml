@@ -70,7 +70,7 @@ http_interactions:
       Prefer:
       - return=representation
       Authorization:
-      - Bearer A21AAFHSp9KtZSo8XZKKEuoNpIxySWV3ABBrZJIDbATToBQn4hd0imO9FTpwnWNj3X80iGby3kAJ6uzS7YZydCnCCI2DgoT3Q
+      - Bearer A21AAFHSp9KtZSo8XZKKEuoNpIxySWV3ABBrZJIDbATToBQn4hd0imO9FTpwnWNj3X80iGby3kAJ6uzS7YZydCnSAMPLE
       Accept-Encoding:
       - gzip
       Sdk-Name:

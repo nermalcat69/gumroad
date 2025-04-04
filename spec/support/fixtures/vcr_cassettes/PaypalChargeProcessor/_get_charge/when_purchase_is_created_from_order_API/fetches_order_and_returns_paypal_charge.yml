@@ -73,7 +73,7 @@ http_interactions:
       Paypal-Request-Id:
       - '1594734344'
       Authorization:
-      - Bearer A21AAF5_XRvpfkuQiGFhNyWGOaxX4RHS6DO_4fSp5SSVZqWnwS96HCMUbg0c53A6tEGwKxIGv2DloIoffac-EYpau45CUR0aw
+      - Bearer A21AAF5_XRvpfkuQiGFhNyWGOaxX4RHS6DO_4fSp5SSVZqWnwS96HCMUbg0c53A6tEGwKxIGv2DloIoffac-EYpSAMPLE
       Accept-Encoding:
       - gzip
       Sdk-Name:
