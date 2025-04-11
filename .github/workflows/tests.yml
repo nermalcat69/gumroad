@@ -422,3 +422,19 @@ jobs:
           WEB_REPO: quay.io/gumroad/web
         run: |
           docker rmi $WEB_REPO:test-${{ github.sha }} 2>/dev/null || true
+
+  record_success:
+    name: Record successful test run
+    runs-on: self-hosted
+    needs: [test_fast, test_slow]
+    if: success()
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.BUILD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.BUILD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Write success marker to S3
+        run: |
+          echo "success" | aws s3 cp - s3://gumroad-logs/github-actions/successful-test-runs/${{ github.sha }}
