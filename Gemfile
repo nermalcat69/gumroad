@@ -27,6 +27,7 @@ group :development, :test do
   gem "shoulda-matchers", "~> 6.0"
   gem "spring", "~> 4.0"
   gem "spring-commands-rspec", "~> 1.0"
+  gem "sidekiq", "~> 7.2"
 end
 
 group :test do
@@ -55,6 +56,12 @@ group :deployer do
   gem "byebug", "~> 11.1"
   gem "colorize", "~> 1.0"
   gem "dotenv", "~> 2.8"
+end
+
+group :production do
+  source "https://gems.contribsys.com/" do
+    gem "sidekiq-pro", "~> 7.2"
+  end
 end
 
 gem "acme-client", "~> 2.0"
@@ -168,15 +175,6 @@ gem "sendgrid-ruby", "~> 6.6"
 gem "shakapacker", "~> 8.0"
 gem "sidekiq-cron", "~> 1.9"
 gem "suo", "~> 0.4"
-
-if ENV["GUMROAD_SIDEKIQ_PRO_DISABLED"] == "true"
-  gem "sidekiq", "~> 7.2"
-else
-  source "https://gems.contribsys.com/" do
-    gem "sidekiq-pro", "~> 7.2"
-  end
-end
-
 gem "sidekiq-unique-jobs", "~> 8.0"
 gem "sitemap_generator", "~> 6.3"
 gem "slack-notifier", "~> 2.4"
