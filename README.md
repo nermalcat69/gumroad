@@ -39,11 +39,20 @@ Before you begin, ensure you have the following installed:
 #### Ruby
 
 - https://www.ruby-lang.org/en/documentation/installation/
-- Install the version listed in [the .ruby-version file](./.ruby-version)
+- Install the version listed in [the .ruby-version file](./.ruby-version).
+- We strongly recommend using a Ruby version manager like [`rbenv`](https://github.com/rbenv/rbenv) to manage your Ruby installations. This avoids issues with system Ruby permissions.
+
+  - **Using `rbenv`:**
+    1. Install `rbenv` and `ruby-build` (e.g., `brew install rbenv ruby-build`).
+    2. Add `rbenv init` to your shell configuration (e.g., `echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc` for Zsh or `echo 'eval "$(rbenv init - bash)"' >> ~/.bash_profile` for Bash) and **restart your shell**.
+    3. Navigate to the project directory (`cd gumroad`).
+    4. Run `rbenv install` (it will automatically pick up the version from `.ruby-version`).
+    5. Verify the correct version is active: `ruby -v` should show the version from `.ruby-version`, and `which ruby` should point to your `.rbenv/shims` directory.
 
 #### Node.js
 
-- https://nodejs.org/en/download
+- https://nodejs.org/en/download (Node.js includes `npm` and `corepack`).
+- We recommend installing Node.js using a package manager like Homebrew: `brew install node`.
 
 #### Docker & Docker Compose
 
@@ -69,13 +78,13 @@ The local version of MySQL is a dependency of the Ruby `mysql2` gem. You do not 
 brew install mysql@8.0 percona-toolkit
 brew link --force mysql@8.0
 
-# to use Homebrew's `openssl`:
+# Configure Bundler use Homebrew's openssl and to find necessary libraries (needed for the `mysql2` gem):
 brew install openssl
 bundle config --global build.mysql2 --with-opt-dir="$(brew --prefix openssl)"
 
-# ensure MySQL is not running as a service
+# Ensure the local MySQL service isn't running (we use Docker's MySQL):
 brew services stop mysql@8.0
-```
+# Troubleshooting: If `bundle install` fails later complaining about `mysql_config` not being found, try reinstalling and relinking: `brew reinstall mysql@8.0 && brew link --force mysql@8.0`.
 
 - For Linux:
   - MySQL:
@@ -120,7 +129,9 @@ We use [pdftk](https://www.pdflabs.com/tools/pdftk-server/) to stamp PDF files w
 We use Bundler to install Ruby gems.
 
 ```shell
+# Ensure you have Bundler >= 2 installed for the correct Ruby version
 gem install bundler
+rbenv rehash # If using rbenv
 ```
 
 If you have a license for Sidekiq Pro, configure its credentials:
@@ -135,6 +146,8 @@ If you don't have a license for Sidekiq Pro, set the environment variable `GUMRO
 export GUMROAD_SIDEKIQ_PRO_DISABLED=true
 echo "export GUMROAD_SIDEKIQ_PRO_DISABLED=true" >> ~/.bashrc
 ```
+
+**Important:** Before running `bundle install`, ensure the `GUMROAD_SIDEKIQ_PRO_DISABLED=true` environment variable is set in your current shell session if you do not have a Sidekiq Pro license. You can set it temporarily by running `export GUMROAD_SIDEKIQ_PRO_DISABLED=true` before `bundle install`.
 
 Run `bundle install` to install the necessary dependencies.
 
@@ -152,6 +165,7 @@ Make sure the correct version of `npm` is enabled:
 corepack enable
 ```
 
+# Ensure Node.js and npm are installed (see Prerequisites)
 Install dependencies:
 
 ```shell
