@@ -14,42 +14,10 @@ describe MillionDollarMilestoneCheckWorker do
 
       described_class.new.perform
 
-      message = "<#{seller.profile_url}|#{seller.name_or_username}> has crossed $1M in earnings :tada:\n" \
-                "• Name: #{seller.name}\n" \
-                "• Username: #{seller.username}\n" \
-                "• Email: #{seller.email}\n"
-      expect(SlackMessageWorker).to have_enqueued_sidekiq_job("awards", "Gumroad Awards", message, "hotpink")
-    end
-
-    it "sends Slack notification if million dollar milestone is reached with compliance info" do
-      allow_any_instance_of(User).to receive(:gross_sales_cents_total_as_seller).and_return(1_000_000_00)
-      compliance_info = instance_double(
-        "UserComplianceInfo",
-        first_name: "John",
-        last_name: "Doe",
-        street_address: "123 Main St",
-        city: "San Francisco",
-        state: "CA",
-        zip_code: "94105",
-        country: "USA"
-      )
-      allow_any_instance_of(User).to receive(:alive_user_compliance_info).and_return(compliance_info)
-      create(:purchase, seller:, link: product, created_at: 15.days.ago)
-
-      described_class.new.perform
-
-      message = "<#{seller.profile_url}|#{seller.name_or_username}> has crossed $1M in earnings :tada:\n" \
-                "• Name: #{seller.name}\n" \
-                "• Username: #{seller.username}\n" \
-                "• Email: #{seller.email}\n" \
-                "• First name: John\n" \
-                "• Last name: Doe\n" \
-                "• Street address: 123 Main St\n" \
-                "• City: San Francisco\n" \
-                "• State: CA\n" \
-                "• ZIP code: 94105\n" \
-                "• Country: USA"
-      expect(SlackMessageWorker).to have_enqueued_sidekiq_job("awards", "Gumroad Awards", message, "hotpink")
+      message =
+        "<#{seller.subdomain_with_protocol}|#{seller.name_or_username}> "\
+        "(<#{seller.admin_page_url}|#{seller.id}>) has crossed $1M in earnings :tada:"
+      expect(SlackMessageWorker).to have_enqueued_sidekiq_job("announcements", "Announcement", message, "green")
     end
 
     it "does not send Slack notification if million dollar milestone is not reached" do

@@ -1,0 +1,55 @@
+<% if current_user.has_risk_privilege %>
+  <hr>
+  <div style="display: flex; justify-content: space-between">
+    <div class="button-group">
+      <% if user.flagged_for_tos_violation? || user.on_probation? %>
+        <%= admin_action label: "Suspend for TOS", url: suspend_for_tos_violation_admin_user_path(user), confirm_message: "Are you sure you want to suspend user #{user.id} for TOS violations?", success_message: "Suspended.", outline: true, color: "warning" %>
+      <% end %>
+
+      <% unless (user.on_probation?) %>
+        <%= admin_action label: "Move to probation", url: put_on_probation_admin_user_path(user), confirm_message: "Are you sure you want to probate user #{user.id}?", done: "Probated.", success_message: "Probated.", href: "#" %>
+        <%= admin_action label: "Probation & review", url: probation_with_reminder_admin_user_path(user, days: User::Risk::PROBATION_WITH_REMINDER_DAYS), confirm_message: "Are you sure you want to probate user #{user.id}, send them a #{User::Risk::PROBATION_WITH_REMINDER_DAYS}-day suspension notice, and schedule a review reminder #{User::Risk::PROBATION_REVIEW_DAYS} days prior?", done: "Probated.", success_message: "Probated." %>
+      <% end %>
+
+      <% if user.suspended? && user.unpaid_balance_cents.positive? %>
+        <%= admin_action label: "Refund balance", url: refund_balance_admin_user_path(user), confirm_message: "Are you sure you want to refund user #{user.id}'s not paid out purchases!?", done: "Refunded.", success_message: "Refunded" %>
+      <% end %>
+    </div>
+  </div>
+
+  <hr>
+  <%= react_component "AdminUserGuids", props: { user_id: user.id }, prerender: true %>
+
+  <hr>
+  <details>
+    <summary>
+      <h3>Bio</h3>
+    </summary>
+    <% if user.bio.present? %>
+      <%= user.bio %>
+    <% else %>
+      <div class="info" role="status">No bio provided.</div>
+    <% end %>
+  </details>
+
+  <hr>
+  <details>
+    <summary>
+      <h3>Last posts</h3>
+    </summary>
+    <% user.last_5_created_posts.tap do |posts| %>
+      <% if posts.any? %>
+        <div class="stack">
+          <% user.last_5_created_posts.each do |post| %>
+            <div>
+              <h5><%= link_to_unless(user.suspended?, post.name, build_view_post_route(post: post)) %></h5>
+              <%= format_relative_time(post.created_at) %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="info" role="status">No posts created.</div>
+      <% end %>
+    <% end %>
+  </details>
+<% end %>

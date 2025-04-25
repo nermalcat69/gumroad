@@ -1,0 +1,5 @@
+<%= header_section(@subject) %>
+<section>
+  <p>User <%= @user.id %> has been suspended for fraud.</p>
+  <p><%= link_to("Admin page for user", admin_user_url(@user)) %></p>
+</section>

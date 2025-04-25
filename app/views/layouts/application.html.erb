@@ -11,9 +11,9 @@
     <div id="user-agent-info" data-settings="<%= RenderingExtension.custom_context(self)[:user_agent_info].to_json %>" style="display: none;"></div>
     <%= render("layouts/shared/flash") %>
     <% if show_nav %>
-      <%= react_component "Nav", props: { title: @title }, prerender: true %>
+      <%= react_component "Nav", props: { title: @title, unbecome_path: impersonating? ? admin_user_impersonator_path(logged_in_user) : nil }, prerender: true %>
     <% end %>
-    <%= content_for?(:content) ? yield(:content) : yield %>
+    <%= yield %>
     <% if content_for? :footer %>
       <footer>
         <%= yield :footer %>

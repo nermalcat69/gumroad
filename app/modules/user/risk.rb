@@ -52,6 +52,16 @@ module User::Risk
     iffy_call_timeout
   end
 
+  def send_warning_email_and_schedule_suspension_email(transition)
+    params = transition.args.first
+    return if params && params[:bulk]
+    raise ArgumentError, "first transition argument must include a product_id and author_id or author_name" if !params || !params[:product_id] || (!params[:author_id] && !params[:author_name])
+    return if tos_violation_reason.nil? || !active?(30) || email.blank?
+
+    RiskMailer.user_flagged_for_tos_violation(email, tos_violation_reason, params[:author_id], params[:product_id]).deliver_later(queue: "critical")
+    SuspensionEmailWorker.perform_in(7.days, id)
+  end
+
   def enable_refunds!
     self.refunds_disabled = false
     save!
@@ -60,6 +70,45 @@ module User::Risk
   def disable_refunds!
     self.refunds_disabled = true
     save!
+  end
+
+  # If changed, backward compatibility with the old value is needed for on_probation_with_reminder? method
+  # to work properly with older comments.
+  PROBATION_WITH_REMINDER_CONTENT_INTRO = "Put on probation by admin. Please review until"
+
+  def put_on_probation_with_reminder!(author, days)
+    put_on_probation!(
+      author_id: author,
+      content: "#{PROBATION_WITH_REMINDER_CONTENT_INTRO} #{days.days.from_now.strftime("%Y-%m-%d")}."
+    )
+    RiskMailer.probation_with_reminder(id, days).deliver_later(queue: "default")
+    ProbationReviewEmailWorker.perform_in((days - PROBATION_REVIEW_DAYS).days, id)
+  end
+
+  def on_probation_with_reminder?
+    on_probation? &&
+    comments.with_type_on_probation.last.content.match?(/#{PROBATION_WITH_REMINDER_CONTENT_INTRO}/o)
+  end
+
+  def flagged_for_explicit_nsfw?
+    flagged_for_tos_violation? && tos_violation_reason == Compliance::EXPLICIT_NSFW_TOS_VIOLATION_REASON
+  end
+
+  def flag_for_explicit_nsfw_tos_violation!(options)
+    transaction do
+      update!(tos_violation_reason: Compliance::EXPLICIT_NSFW_TOS_VIOLATION_REASON)
+
+      comment_content = "All products were unpublished because this user was selling sexually explicit / fetish-oriented content."
+      flag_for_tos_violation!(options.merge(bulk: true, content: comment_content))
+
+      ContactingCreatorMailer.flagged_for_explicit_nsfw_tos_violation(id).deliver_later(queue: "default")
+
+      # TODO(ershad): Enqueue in Iffy for review in 10 days
+
+      links.alive.find_each do |product|
+        product.unpublish!(is_unpublished_by_admin: true)
+      end
+    end
   end
 
   def suspend_due_to_stripe_risk

@@ -29,15 +29,4 @@ module ApplicationHelper
       } : nil
     }
   end
-
-  def number_to_si(number)
-    number_to_human(
-      number,
-      units: { unit: "", thousand: "K", million: "M", billion: "B", trillion: "T" },
-      precision: 1,
-      significant: false,
-      round_mode: :truncate,
-      format: "%n%u"
-    )
-  end
 end

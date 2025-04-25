@@ -49,6 +49,25 @@ class HelperUserInfoService
     metadata
   end
 
+  def metadata
+    return {} unless user
+
+    metadata = {
+      name: user.name,
+      email: user.email,
+      value: user.sales_cents_total(after: 28.days.ago) + purchases_cents_total(after: 28.days.ago),
+      links: {
+        "Impersonate": admin_impersonate_helper_action_url(user_id: user.external_id, host: UrlService.domain_with_protocol)
+      }
+    }
+
+    if user.merchant_accounts.alive.stripe.first&.charge_processor_merchant_id
+      metadata[:links]["View Stripe account"] = admin_stripe_dashboard_helper_action_url(user_id: user.external_id, host: UrlService.domain_with_protocol)
+    end
+
+    metadata
+  end
+
   private
     def purchases_cents_total(after: nil)
       search_params = {
