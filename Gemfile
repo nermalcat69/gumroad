@@ -169,15 +169,15 @@ gem "shakapacker", "~> 8.0"
 gem "sidekiq-cron", "~> 1.9"
 gem "suo", "~> 0.4"
 
-if ENV["GUMROAD_SIDEKIQ_PRO_DISABLED"] == "true"
-  gem "sidekiq", "~> 7.2"
-else
+gem "sidekiq", "~> 7.2"
+gem "sidekiq-unique-jobs", "~> 8.0"
+
+group :production, :staging do
   source "https://gems.contribsys.com/" do
     gem "sidekiq-pro", "~> 7.2"
   end
 end
 
-gem "sidekiq-unique-jobs", "~> 8.0"
 gem "sitemap_generator", "~> 6.3"
 gem "slack-notifier", "~> 2.4"
 gem "sprockets-rails", "~> 3.4", require: "sprockets/railtie"
