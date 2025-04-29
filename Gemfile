@@ -122,6 +122,7 @@ gem "mime-types", "~> 3.4"
 gem "mini_racer", "0.16.0"
 gem "money", "~> 6.16"
 gem "mongoid", "~> 9.0"
+gem "mysql2", ">= 0.5.6"
 gem "nokogiri", "~> 1.13"
 gem "omniauth-facebook", "~> 10.0"
 gem "omniauth-google-oauth2", "~> 1.1", ">= 1.1.1"
@@ -168,12 +169,12 @@ gem "shakapacker", "~> 8.0"
 gem "sidekiq-cron", "~> 1.9"
 gem "suo", "~> 0.4"
 
-if ENV["SIDEKIQ_PRO_ENABLED"] == "true"
+if ENV["GUMROAD_SIDEKIQ_PRO_DISABLED"] == "true"
+  gem "sidekiq", "~> 7.2"
+else
   source "https://gems.contribsys.com/" do
     gem "sidekiq-pro", "~> 7.2"
   end
-else
-  gem "sidekiq", "~> 7.2"
 end
 
 gem "sidekiq-unique-jobs", "~> 8.0"
@@ -198,3 +199,4 @@ gem "ruby-openai", "~> 7.0"
 gem "anycable-rails", "~> 1.5"
 
 gem "react_on_rails", "~> 14.0"
+gem "psych", "~> 5.2.3"
