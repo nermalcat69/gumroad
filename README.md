@@ -121,10 +121,15 @@ We use Bundler to install Ruby gems.
 gem install bundler
 ```
 
-Install gems without production or staging dependencies by default:
+Configure Bundler to install gems without production or staging dependencies by default:
 
 ```shell
 bundle config --local without production staging
+```
+
+Install gems:
+
+```shell
 bundle install
 ```
 
