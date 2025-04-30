@@ -35,8 +35,6 @@ class MillionDollarMilestoneCheckWorker
                    "• Country: #{compliance_info.country}"
       end
 
-      message = "<#{user.profile_url}|#{user.name_or_username}> (<#{user.admin_page_url}|#{user.id}>) has " \
-                "crossed $1M in earnings :tada:"
       if user.update(million_dollar_announcement_sent: true)
         SlackMessageWorker.perform_async("awards", "Gumroad Awards", message, "hotpink")
       else
