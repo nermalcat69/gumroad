@@ -12,7 +12,7 @@ group :development do
   gem "stackprof", "~> 0.2"
 end
 
-group :production, :staging do
+group :staging, :production do
   source "https://gems.contribsys.com/" do
     gem "sidekiq-pro", "~> 7.2"
   end
