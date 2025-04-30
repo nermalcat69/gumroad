@@ -121,7 +121,12 @@ We use Bundler to install Ruby gems.
 gem install bundler
 ```
 
-Run `bundle install` to install the necessary dependencies.
+Install gems without production or staging dependencies by default:
+
+```shell
+bundle config --local without production staging
+bundle install
+```
 
 Also make sure to install `dotenv` as it is required for some console commands:
 
