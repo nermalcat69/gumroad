@@ -10,7 +10,7 @@
   <% bclass.push("sidebar-nav") %>
   <body class="<%= bclass.join(" ") %>" id="<%= @body_id %>">
     <%= render("layouts/shared/flash") %>
-    <%= react_component "AdminNav", props: { title: @title, current_user: current_user_props(current_user, impersonated_user), unbecome_path: impersonating? ? admin_user_impersonator_path(current_user) : nil }, prerender: true %>
+    <%= react_component "AdminNav", props: { title: @title, current_user: current_user_props(current_user, impersonated_user) }, prerender: true %>
 
     <main>
       <header>
