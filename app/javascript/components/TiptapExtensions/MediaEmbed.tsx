@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { Editor, Node as TiptapNode, Extension } from "@tiptap/core";
 import { DOMOutputSpec } from "@tiptap/pm/model";
 import { NodeViewProps, NodeViewWrapper, ReactNodeViewRenderer } from "@tiptap/react";
@@ -64,7 +65,7 @@ export const Raw = TiptapNode.create({
   renderHTML: ({ HTMLAttributes }) => {
     const doc = document.createElement("div");
     doc.className = "tiptap__raw";
-    doc.innerHTML = cast(HTMLAttributes.html);
+    doc.innerHTML = DOMPurify.sanitize(cast(HTMLAttributes.html));
     if (HTMLAttributes.title) doc.setAttribute("data-title", cast(HTMLAttributes.title));
     if (HTMLAttributes.url) doc.setAttribute("data-url", cast(HTMLAttributes.url));
     if (HTMLAttributes.thumbnail) doc.setAttribute("data-thumbnail", cast(HTMLAttributes.thumbnail));
