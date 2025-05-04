@@ -109,7 +109,7 @@ class AffiliateRequestsController < ApplicationController
     end
 
     def set_affiliate_request
-    @affiliate_request = current_seller.affiliate_requests.find_by_external_id!(params[:id])
+      @affiliate_request = current_seller.affiliate_requests.find_by_external_id!(params[:id])
     end
 
     def permitted_create_params
