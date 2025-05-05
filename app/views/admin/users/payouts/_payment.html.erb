@@ -58,11 +58,8 @@
         <% if payment.was_created_in_split_mode %>
           <dt>Split payment info</dt>
           <dd>
-            <pre>
-            <% payment.split_payments_info.each do |payment_info| %>
-              <%= JSON.pretty_generate(payment_info) %>
-            <% end %>
-            </pre>
+            <pre><% payment.split_payments_info.each do |payment_info| %>
+<%= JSON.pretty_generate(payment_info) %><% end %></pre>
           </dd>
         <% end %>
       <% end %>
