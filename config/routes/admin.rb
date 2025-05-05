@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 namespace :admin do
+  get "/", to: "base#index"
+  get :impersonate, to: "base#impersonate"
+  delete :unimpersonate, to: "base#unimpersonate"
+  get :redirect_to_stripe_dashboard, to: "base#redirect_to_stripe_dashboard"
+  get "helper_actions/impersonate/:user_id", to: "helper_actions#impersonate", as: :impersonate_helper_action
+  get "helper_actions/stripe_dashboard/:user_id", to: "helper_actions#stripe_dashboard", as: :stripe_dashboard_helper_action
+
   get "action_call_dashboard", to: "action_call_dashboard#index"
 
   resources :users, only: [:show, :destroy], defaults: { format: "html" } do
