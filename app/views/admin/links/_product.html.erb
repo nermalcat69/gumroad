@@ -4,10 +4,7 @@
       <%= link_to_if(product.preview_url, image_tag(cdn_url_for(product.preview_url) || asset_path("cover_placeholder.png"), style: "width: var(--form-element-height)", alt: "Preview image"), product.preview_url, target: "_blank") %>
       <div style="display: grid; gap: var(--spacer-2)">
         <h2>
-          <%= succeed(",") do %>
-            <%= product.price_formatted %>
-          <% end %>
-          <%= link_to_unless_current(h(product.name), admin_link_url(product), title: product.id) %>
+          <%= product.price_formatted %>, <%= link_to_unless_current(h(product.name), admin_link_url(product), title: product.id) %>
           <%= link_to(tag.span(nil, class: "icon icon-arrow-up-right-square"), product.long_url, target: "_blank") %>
         </h2>
         <div>
@@ -107,7 +104,7 @@
     <dt>Category</dt>
     <dd>
       <% if product.taxonomy.present? %>
-        <%= product.taxonomy.ancestry_path.map { |taxonomy| t("taxonomy.#{taxonomy}") }.join(" > ") %>
+        <%= product.taxonomy.ancestry_path.map { |taxonomy| Discover::TaxonomyPresenter::TAXONOMY_LABELS[taxonomy] }.join(" > ") %>
       <% end %>
     </dd>
 
