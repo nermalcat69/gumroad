@@ -20,10 +20,11 @@ class Admin::Compliance::CardsController < Admin::BaseController
       end
     end
 
-    transactions = AdminSearchService.new.search_by_card(**search_params)
+    purchases = AdminSearchService.new.search_purchases(**search_params)
+    service_charges = AdminSearchService.new.search_service_charges(**search_params)
 
-    @purchases = transactions[:purchases]
-    @service_charges = transactions[:service_charges]
+    @purchases = purchases
+    @service_charges = service_charges
   end
 
   def refund
