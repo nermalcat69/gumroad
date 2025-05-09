@@ -22,15 +22,6 @@ namespace :admin do
     end
     resources :service_charges, only: :index
     member do
-      post :probation_with_reminder
-      post :mark_compliant
-      post :mark_compliant_from_iffy
-      post :suspend_for_fraud
-      post :suspend_for_fraud_from_iffy
-      post :flag_for_explicit_nsfw_tos_violation_from_iffy
-      post :suspend_for_tos_violation
-      post :put_on_probation
-      post :flag_for_fraud
       post :refund_balance
       get :stats
       post :verify
