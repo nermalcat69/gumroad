@@ -28,6 +28,14 @@ class Admin::UsersController < Admin::BaseController
     render json: { success: true }
   end
 
+  def verify
+    @user.verified = !@user.verified
+    @user.save!
+    render json: { success: true }
+  rescue => e
+    render json: { success: false, message: e.message }
+  end
+
   private
     def fetch_user
       if params[:id].include?("@")
