@@ -1,6 +1,0 @@
-<%= header_section(@subject) %>
-<section>
-  <p><%= "It's been 7 days since we alerted user #{ @user.id } about a TOS violation for selling #{ @user.tos_violation_reason }.".html_safe %></p>
-  <p>Please complete suspension for TOS violation or clear the user by visiting their admin page.</p>
-  <p><%= link_to "Admin page for user", admin_user_url(@user) %></p>
-</section>
