@@ -1,0 +1,5 @@
+= load_pack("admin_review")
+
+.paragraphs
+  = render partial: "admin/users/payouts/payment", collection: @payouts
+  = paginate @payouts, views_prefix: "admin"

@@ -1,0 +1,257 @@
+.card
+  %div{ style: "display: grid; gap: var(--spacer-2)" }
+    %h2.purchase-title
+      = link_to(purchase.formatted_display_price, admin_purchase_path(purchase))
+      = " + #{purchase.formatted_gumroad_tax_amount} VAT" if purchase.gumroad_responsible_for_tax?
+      = " for "
+      = link_to_unless_current(h(purchase.link.name), admin_link_url(purchase.link), title: purchase.link.id)
+      = purchase.variants_list
+      = link_to purchase.link.long_url, class: "show" do
+        %span.icon.icon-arrow-up-right-square
+    %ul.inline
+      %li= format_relative_time(purchase.created_at)
+      %li= link_to(purchase.email, admin_search_purchases_path(query: purchase.email))
+
+  %hr
+  .paragraphs
+    %h3 Info
+    %dl
+      - if purchase.seller.support_email.present?
+        %dt Seller support email
+        %dd= mail_to purchase.seller.support_email
+
+      %dt Seller email
+      %dd= mail_to purchase.seller.email
+
+      - if purchase.merchant_account
+        %dt Merchant account
+        %dd= link_to("#{purchase.merchant_account.id} – #{purchase.merchant_account.charge_processor_id&.capitalize}", admin_merchant_account_path(purchase.merchant_account))
+
+        %dt Funds held by
+        %dd= purchase.merchant_account.holder_of_funds.capitalize
+
+      %dt Fee
+      %dd= Money.new(purchase.fee_cents).format(symbol: true)
+
+      - if purchase.tip.present?
+        %dt Tip
+        %dd= Money.new(purchase.tip.value_usd_cents).format(symbol: true)
+
+      - if purchase.tax_cents > 0
+        %dt Seller Tax
+        %dd
+          = purchase.formatted_seller_tax_amount
+          = purchase.link.is_price_tax_exclusive ? " (Exclusive)" : " (Inclusive)"
+
+      - if purchase.gumroad_tax_cents > 0
+        %dt Gumroad Collected Tax
+        %dd= purchase.formatted_gumroad_tax_amount
+
+      - if purchase.shipping_cents > 0
+        %dt Shipping Cost
+        %dd= purchase.formatted_shipping_amount
+
+      - if purchase.affiliate.present?
+        %dt Affiliate
+        %dd= purchase.formatted_affiliate_credit_amount
+
+      %dt Transaction Total
+      %dd= purchase.formatted_total_transaction_amount
+
+      %dt #{purchase.charge_processor_id&.capitalize} transaction ID
+      %dd
+        = link_to_processor(purchase.charge_processor_id, purchase.stripe_transaction_id, purchase.charged_using_gumroad_merchant_account?, target: "_blank")
+        |
+        = link_to(purchase.id, admin_purchase_path(purchase))
+
+      %dt Order number
+      %dd= purchase.external_id_numeric
+
+      - if purchase.quantity > 1
+        %dt Quantity
+        %dd= purchase.quantity
+
+      %dt Status
+      %dd
+        = purchase.purchase_state.capitalize
+        = "(refunded)" if purchase.stripe_refunded
+        = "(partially refunded)" if purchase.stripe_partially_refunded
+        = "(chargeback)" if purchase.chargedback_not_reversed?
+        = "(chargeback reversed)" if purchase.chargeback_reversed?
+        = "(#{purchase.formatted_error_code})" if purchase.failed?
+
+      - if purchase.refunds.present?
+        %dt Refunds
+        %dd
+          %ul
+          - purchase.refunds.each do |refund|
+            - user = refund.user
+            %li
+              Refunder:
+              = user ? link_to(user.name.presence || "User #{user.id}", admin_user_url(user)) : "(unknown)"
+            %li
+              Refund Status:
+              = refund.status.capitalize
+
+      - if purchase.card_type.present? && purchase.card_visual.present?
+        %dt Card
+        %dd
+          = link_to admin_search_purchases_path(query: "fingerprint:#{purchase.stripe_fingerprint}") do
+            = purchase.card_type.upcase
+            *#{purchase.card_visual.delete("*").delete(" ")} #{"(#{purchase.card_country})" if purchase.card_country.present?}
+          - if purchase.charge_processor_id == StripeChargeProcessor.charge_processor_id
+            |
+            = link_to_stripe_fingerprint_search(purchase.stripe_fingerprint, target: "_blank")
+
+        %dt IP Address
+        %dd= link_to purchase.ip_address, admin_search_purchases_path(query: purchase.ip_address)
+
+        %dt IP Country
+        %dd= purchase.ip_country
+
+      - if purchase.is_preorder_authorization?
+        %dt Pre-order Receipt
+        %dd
+          - email_info = CustomerEmailInfo.where(purchase: purchase, email_name: "preorder_receipt").last
+          = email_info.try(:state).try(:capitalize)
+          = "(on #{email_info.delivered_at})" if email_info.try(:delivered?)
+          = "(on #{email_info.opened_at})" if email_info.try(:opened?)
+
+      - else
+        %dt Receipt
+        %dd
+          - email_info = CustomerEmailInfo.where(purchase: purchase, email_name: "receipt").last
+          = email_info.try(:state).try(:capitalize)
+          = "(on #{email_info.delivered_at})" if email_info.try(:delivered?)
+          = "(on #{email_info.opened_at})" if email_info.try(:opened?)
+
+      - if purchase.is_bundle_purchase?
+        - purchase.product_purchases.each do |product_purchase|
+          - if product_purchase.url_redirect.present?
+            %dt= product_purchase.link.name
+            %dd
+              = link_to product_purchase.url_redirect.download_page_url, product_purchase.url_redirect.download_page_url
+              (#{product_purchase.url_redirect.uses} uses)
+      - elsif purchase.url_redirect.present?
+        %dt URL redirect
+        %dd
+          = link_to purchase.url_redirect.download_page_url, purchase.url_redirect.download_page_url
+          (#{purchase.url_redirect.uses} uses)
+
+      - if purchase.subscription.present?
+        %dt Manage Membership URL
+        %dd
+          = link_to manage_subscription_url(purchase.subscription.external_id), manage_subscription_url(purchase.subscription.external_id), target: "_blank"
+
+      - if purchase.offer_code.present? && !purchase.is_gift_sender_purchase
+        %dt Discount code
+        %dd
+          = purchase.offer_code.code
+          for #{purchase.offer_code.displayed_amount_off(purchase.link.price_currency_type, with_symbol: true)} off
+      - if purchase.street_address.present?
+        %dt Shipping
+        %dd
+          = purchase.full_name
+          = purchase.street_address
+          = "#{purchase.city}, #{purchase.state} #{purchase.zip_code}"
+          = purchase.country
+      - if purchase.custom_fields.present?
+        - purchase.custom_fields.each do |field|
+          %dt= field[:name]
+          %dd
+            = field[:value]
+            (custom field)
+      - if purchase.purchase_state == "preorder_authorization_successful"
+        = admin_action label: "Cancel Pre-order", url: cancel_preorder_by_seller_path(purchase.external_id), loading: "Canceling...", done: "Cancelled!", confirm_message: "Are you sure you want to cancel this preorder?", success_message: "Cancelled!"
+      - if purchase.subscription.present?
+        %dt Cancelled
+        %dd
+          - if purchase.subscription.cancelled_at.present?
+            = icon_yes
+            = "(on #{purchase.subscription.cancelled_at} by #{purchase.subscription.cancelled_by_buyer ? 'buyer' : 'seller'})"
+          - else
+            = icon_no
+
+        %dt Ended
+        %dd
+          - if purchase.subscription.ended_at.present?
+            = icon_yes
+            = "(on #{purchase.subscription.ended_at})"
+          - else
+            = icon_no
+
+        %dt Failed
+        %dd
+          - if purchase.subscription.failed_at.present?
+            = icon_yes
+            = "(on #{purchase.subscription.failed_at})"
+          - else
+            = icon_no
+
+      - if purchase.license.present?
+        %dt License
+        %dd= purchase.license.serial
+
+      - if purchase.affiliate.present?
+        %dt Affiliate
+        %dd= link_to(purchase.affiliate.affiliate_user.form_email, admin_search_users_path(query: "#{purchase.affiliate.affiliate_user.form_email}"))
+
+      %dt Can email
+      %dd{ "aria-label" => "Can email" }
+        = purchase.can_contact? ? icon_yes : icon_no
+
+  - if purchase.is_gift_sender_purchase
+    %hr
+    %details
+      %summary
+        %h3 Gift Sender Info
+      %dl
+        %dt For
+        %dd= purchase.giftee_email
+
+        %dt Note
+        %dd= purchase.gift_note
+
+        %dt Receiver purchase id
+        %dd= link_to(purchase.gift.giftee_purchase_id, admin_purchase_path(purchase.gift.giftee_purchase_id))
+
+  - if purchase.is_gift_receiver_purchase
+    %hr
+    %details
+      %summary
+        %h3 Gift Receiver Info
+      %dl
+        %dt From
+        %dd= purchase.gifter_email
+
+        %dt Note
+        %dd= purchase.gift_note
+
+        %dt Sender purchase id
+        %dd= link_to(purchase.gift.gifter_purchase_id, admin_purchase_path(purchase.gift.gifter_purchase_id))
+
+  %hr
+  .button-group
+    - if purchase.can_force_update? || purchase.failed?
+      = admin_action label: "Sync with Stripe/PayPal", url: sync_status_with_charge_processor_admin_purchase_path(purchase), loading: "syncing...", done: "synced!", confirm_message: "Are you sure you want to sync this purchase's state with Stripe/PayPal?", success_message: "synced!"
+    - if purchase.successful? && !purchase.stripe_refunded
+      = admin_action label: "Refund", url: refund_admin_purchase_path(purchase), loading: "Refunding...", done: "Refunded!", confirm_message: "Are you sure you want to refund this purchase?", success_message: "Refunded!"
+      = admin_action label: "Refund for Fraud", url: refund_for_fraud_admin_purchase_path(purchase), loading: "Refunding...", done: "Refunded!", confirm_message: "Are you sure you want to refund this purchase for fraud?", success_message: "Refunded!"
+    = admin_action label: "Refund Card for Fraud", url: refund_admin_cards_path(stripe_fingerprint: purchase.stripe_fingerprint), loading: "Refunding...", done: "Refunding purchases!", confirm_message: "Are you sure you want to Mass-refund for fraud all purchases associated with this purchase's card?", success_message: "Refunding purchases!"
+    - if purchase.buyer_blocked?
+      = admin_action label: "Unblock buyer", url: unblock_buyer_admin_purchase_path(purchase), loading: "Unblocking buyer...", done: "Buyer unblocked!", success_message: "Buyer unblocked!"
+    - if purchase.successful?
+      = link_to "Go to Receipt", receipt_purchase_path(purchase.external_id), target: "_blank", class: "button small"
+
+  %hr
+  .paragraphs
+    %h3 Comments
+    = render("admin/comments/form", commentable: purchase)
+    = render("admin/comments/index", commentable: purchase)
+
+  %hr
+  %dl
+    %dt Updated
+    %dd= format_relative_time(purchase.updated_at)
+    %dt Deleted
+    %dd= format_relative_time(purchase.deleted_at, placeholder: icon_no)

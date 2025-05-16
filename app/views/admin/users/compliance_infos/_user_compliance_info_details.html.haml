@@ -1,0 +1,67 @@
+- user = user_compliance_info.user
+.paragraphs
+  %h3 Personal Info
+  %dl
+    %dt Is Business
+    %dd= user_compliance_info.is_business ? icon_yes : icon_no
+
+    %dt First Name
+    %dd= user_compliance_info.first_name
+
+    %dt Last Name
+    %dd= user_compliance_info.last_name
+
+    %dt Join Date
+    %dd= user.created_at.to_fs(:formatted_date_full_month)
+
+    %dt Address Street
+    %dd= user_compliance_info.street_address
+
+    %dt Address City
+    %dd= user_compliance_info.city
+
+    %dt Address State
+    %dd
+      = user_compliance_info.state
+      - if user_compliance_info.state_code
+        = "(#{user_compliance_info.state_code})"
+
+    %dt Address Zip
+    %dd= user_compliance_info.zip_code
+
+    %dt Address Country
+    %dd
+      - if user_compliance_info.country
+        = user_compliance_info.country
+        = "(#{user_compliance_info.country_code})"
+
+    %dt Individual Tax ID Provided
+    %dd= user_compliance_info.individual_tax_id.present? ? icon_yes : icon_no
+
+- if user_compliance_info.is_business
+  .paragraphs
+    %h3 Business Info
+    %dl
+      %dt Name
+      %dd= user_compliance_info.business_name
+
+      %dt Street Address
+      %dd= user_compliance_info.business_street_address
+
+      %dt City
+      %dd= user_compliance_info.business_city
+
+      %dt State
+      %dd= user_compliance_info.business_state
+
+      %dt Zip
+      %dd= user_compliance_info.business_zip_code
+
+      %dt Country
+      %dd= user_compliance_info.business_country
+
+      %dt Type
+      %dd= user_compliance_info.business_type
+
+      %dt Tax ID Provided
+      %dd= user_compliance_info.business_tax_id.present? ? icon_yes : icon_no

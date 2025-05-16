@@ -4,20 +4,34 @@ require "spec_helper"
 
 describe Admin::BaseController do
   render_views
-
-  let(:admin_user) { create(:admin_user) }
-
-  describe "GET index" do
-    before(:each) do
-      sign_in admin_user
-    end
-
-    it "renders the page" do
-      get :index
-
-      expect(response).to be_successful
+  class DummyPolicy < ApplicationPolicy
+    def index_with_policy?
+      false
     end
   end
+
+  controller(Admin::BaseController) do
+    def index
+      render json: { success: true }
+    end
+
+    def index_with_policy
+      authorize :dummy
+
+      render json: { success: true }
+    end
+  end
+
+  before do
+    routes.draw do
+      namespace :admin do
+        get :index, to: "base#index"
+        get :index_with_policy, to: "base#index_with_policy"
+      end
+    end
+  end
+
+  let(:admin_user) { create(:admin_user) }
 
   describe "require_admin!" do
     shared_examples_for "404 for xhr request" do

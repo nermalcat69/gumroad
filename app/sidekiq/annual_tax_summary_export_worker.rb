@@ -12,6 +12,6 @@ class AnnualTaxSummaryExportWorker
     end
 
     return unless csv_url
-    AccountingMailer.payable_report(csv_url, year).deliver_now
+    AdminMailer.payable_report(csv_url, year).deliver_now
   end
 end

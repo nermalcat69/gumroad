@@ -32,7 +32,7 @@ class Iffy::Product::IngestService
         {
           body: {
             clientId: product.external_id,
-            clientUrl: product.long_url,
+            clientUrl: admin_link_url(product.unique_permalink, host: DOMAIN),
             name: product.name,
             entity: "Product",
             text:,

@@ -14,6 +14,7 @@ describe MillionDollarMilestoneCheckWorker do
 
       described_class.new.perform
 
+<<<<<<< HEAD
       message = "<#{seller.profile_url}|#{seller.name_or_username}> has crossed $1M in earnings :tada:\n" \
                 "• Name: #{seller.name}\n" \
                 "• Username: #{seller.username}\n" \
@@ -50,6 +51,12 @@ describe MillionDollarMilestoneCheckWorker do
                 "• ZIP code: 94105\n" \
                 "• Country: USA"
       expect(SlackMessageWorker).to have_enqueued_sidekiq_job("awards", "Gumroad Awards", message, "hotpink")
+=======
+      message =
+        "<#{seller.subdomain_with_protocol}|#{seller.name_or_username}> "\
+        "(<#{seller.admin_page_url}|#{seller.id}>) has crossed $1M in earnings :tada:"
+      expect(SlackMessageWorker).to have_enqueued_sidekiq_job("announcements", "Announcement", message, "green")
+>>>>>>> parent of 8f9ddba2b6 (Remove admin except for index (#28985))
     end
 
     it "does not send Slack notification if million dollar milestone is not reached" do

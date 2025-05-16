@@ -1,0 +1,12 @@
+- @new_sellers_by_date.each_slice(3) do |date_new_sellers|
+  .columns.three
+    - date_new_sellers.each do |date, sellers|
+      .box
+        %h2
+          %span= "#{time_ago_in_words(date)} ago"
+        .rule
+        %ul
+          - sellers.each do |seller|
+            %li
+              = link_to user_name(seller), admin_user_url(seller)
+              %strong.right= seller.user_risk_state

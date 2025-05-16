@@ -1,0 +1,22 @@
+!!!
+%html{ lang: I18n.locale }
+  = render("layouts/application/head")
+  - bclass = []
+  - bclass.push "mac" if request.headers["User-Agent"]&.include? "Macintosh"
+  - bclass.push(@body_class) if @body_class
+  - show_nav = !@hide_layouts && user_signed_in?
+  - bclass.push("sidebar-nav") if show_nav
+  %body{ id: @body_id, class: bclass.join(" "), style: params[:as_embed] && "background: transparent" }
+    #design-settings{ data: { settings: RenderingExtension.custom_context(self)[:design_settings].to_json }, style: "display: none;" }
+    #user-agent-info{ data: { settings: RenderingExtension.custom_context(self)[:user_agent_info].to_json }, style: "display: none;" }
+    = render("layouts/shared/flash")
+    - if show_nav
+      = react_component "Nav", props: { title: @title, unbecome_path: impersonating? ? admin_user_impersonator_path(logged_in_user) : nil }, prerender: true
+    = yield
+    - if content_for? :footer
+      %footer
+        = yield :footer
+    = javascript_include_tag "application"
+    = load_pack("base") unless @hide_layouts
+    = yield :script
+    = render("layouts/shared/helper_widget")

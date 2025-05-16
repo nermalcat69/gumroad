@@ -1,0 +1,34 @@
+
+.paragraphs
+  %table
+    %thead
+      %tr
+        %th Purchase
+        %th By
+    %tbody
+      - @purchases.each do |purchase|
+        %tr
+          %td{ "data-label": "Purchase" }
+            = link_to(purchase.formatted_display_price, admin_purchase_path(purchase))
+            = " + #{purchase.formatted_gumroad_tax_amount} VAT" if purchase.gumroad_responsible_for_tax?
+            = " for"
+            = link_to_unless_current(h(purchase.link.name), admin_link_url(purchase.link), title: purchase.link.id)
+            = purchase.variants_list
+            = link_to purchase.link.long_url, target: "_blank" do
+              %span.icon.icon-arrow-up-right-square
+            %ul.inline
+              - states = [purchase.purchase_state]
+              - states << "(refunded)" if purchase.stripe_refunded?
+              - states << "(partially refunded)" if purchase.stripe_partially_refunded?
+              - states << "(chargeback)" if purchase.chargedback_not_reversed?
+              - states << "(chargeback reversed)" if purchase.chargeback_reversed?
+              - states << "(#{purchase.formatted_error_code})" if purchase.failed?
+              - states.each do |state|
+                %li= state
+
+          %td{ "data-label": "By" }
+            = link_to(purchase.email, admin_search_purchases_path(query: purchase.email))
+            %small
+              = format_relative_time(purchase.created_at)
+
+  = paginate @purchases, views_prefix: "admin"

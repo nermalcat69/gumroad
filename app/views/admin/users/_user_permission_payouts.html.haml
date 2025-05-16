@@ -1,0 +1,63 @@
+- if current_user.has_payout_privilege
+  - if user.alive_user_compliance_info
+    %hr
+      %div{style: "display: grid; gap: var(--spacer-4); grid-template-columns: repeat(auto-fit, minmax(var(--dynamic-grid), 1fr)); place-items: flex-start"}
+        = render("admin/users/compliance_infos/user_compliance_info_details", user_compliance_info: user.alive_user_compliance_info)
+
+  %hr
+    %div{style: "display: grid; gap: var(--spacer-4); grid-template-columns: repeat(auto-fit, minmax(var(--dynamic-grid), 1fr)); place-items: flex-start"}
+      .paragraphs
+        %h3 Payout info
+        %div
+          - case
+          - when user.active_bank_account
+            - account = user.active_bank_account
+            %span= "#{account.type} / #{account.account_holder_full_name} / #{account.formatted_account}"
+          - when user.payment_address.present?
+            %span= "PayPal / #{user.payment_address}"
+          - else
+            = icon_no
+            This user has no payout method.
+
+      .paragraphs
+        %h3 Merchant Accounts
+        - if user.merchant_accounts.empty?
+          No merchant accounts.
+        - else
+          %ul.inline
+            - user.merchant_accounts.each do |merchant_account|
+              %li
+                = link_to "#{merchant_account.id} – #{merchant_account.charge_processor_id}", admin_merchant_account_path(merchant_account)
+                = merchant_account.alive? && merchant_account.charge_processor_alive? ? icon_yes : icon_no
+
+  %hr
+  %details
+    %summary
+      %h3 Email changes
+    %div
+      - fields = %w(email payment_address)
+      %table
+        %thead
+          %tr
+            %th Field
+            %th Old
+            %th New
+            %th Changed
+        %tbody
+          - user.versions_for(*fields).each do |version|
+            - version.changes.sort.each do |field, values|
+              %tr
+                %td{ "data-label" => "Field" }= field
+                %td{ "data-label" => "Old" }= values.first
+                %td{ "data-label" => "New" }= values.last
+                %td{ "data-label" => "Changed" }= format_relative_time(version.created_at)
+        %tfoot
+          %tr
+            %td{ colspan: 4 }
+              %p
+                Tracked fields:
+                = fields.join(", ")
+              %small
+                Results from last #{Versionable::LIMIT} version records.
+                %br
+                Version records are deleted regularly. The information may not reflect the complete history of the account.

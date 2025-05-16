@@ -1,0 +1,12 @@
+- comments = commentable.comments.includes(:author).references(:author).order(created_at: :desc)
+- if comments.any?
+  %details
+    %summary
+      %h4
+        = pluralize(comments.count, "comment")
+
+    .rows{ role: "list" }
+      - comments.each do |comment|
+        = render partial: "admin/comments/comment", locals: { comment: comment }
+- else
+  .info{ role: "status" } No comments created.

@@ -8,6 +8,6 @@ class SendDeferredRefundsReportWorker
     return unless Rails.env.production?
 
     last_month = Time.current.last_month
-    AccountingMailer.deferred_refunds_report(last_month.month, last_month.year).deliver_now
+    AdminMailer.deferred_refunds_report(last_month.month, last_month.year).deliver_now
   end
 end

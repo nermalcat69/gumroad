@@ -9,6 +9,6 @@ class SendFinancesReportWorker
 
     last_month = Time.current.last_month
 
-    AccountingMailer.funds_received_report(last_month.month, last_month.year).deliver_now
+    AdminMailer.funds_received_report(last_month.month, last_month.year).deliver_now
   end
 end

@@ -127,7 +127,7 @@ describe CreateVatReportJob do
 
     it "returns a zipped file containing a csv file for every month in the quarter" do
       expect(s3_bucket_double).to receive(:object).and_return(@s3_object)
-      expect(AccountingMailer).to receive(:vat_report).with(1, 2015, anything).and_call_original
+      expect(AdminMailer).to receive(:vat_report).with(1, 2015, anything).and_call_original
       allow_any_instance_of(described_class).to receive(:gbp_to_usd_rate_for_date).and_return(1.5)
 
       described_class.new.perform(1, 2015)

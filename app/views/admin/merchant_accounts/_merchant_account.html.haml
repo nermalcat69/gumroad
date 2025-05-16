@@ -1,0 +1,77 @@
+.card
+  %div
+    %div
+      %h2
+        = "Merchant Account #{merchant_account.id}"
+      = format_relative_time(merchant_account.created_at)
+
+  %hr
+  %div
+    %dl
+      %dt ID
+      %dd= merchant_account.id
+
+      %dt External ID
+      %dd= merchant_account.external_id
+
+      %dt User
+      %dd
+        - if merchant_account.user
+          = link_to(merchant_account.user.id, admin_user_path(merchant_account.user))
+        - else
+          none
+
+      %dt Country
+      %dd= "#{ISO3166::Country[merchant_account.country]&.common_name} (#{merchant_account.country})"
+
+      %dt Currency
+      %dd= merchant_account.currency.upcase
+
+      %dt Active
+      %dd= merchant_account.deleted_at.blank? ? icon_yes : icon_no
+
+      %dt Funds are held by
+      %dd= merchant_account.holder_of_funds.capitalize
+
+      %dt Charge Processor
+      %dd
+        = merchant_account.charge_processor_id.capitalize
+        - if merchant_account.charge_processor_merchant_id
+          |
+          %a{ href: (StripeUrl.connected_account_url(merchant_account.charge_processor_merchant_id) if merchant_account.charge_processor_id == StripeChargeProcessor.charge_processor_id) }= merchant_account.charge_processor_merchant_id
+
+      %dt #{merchant_account.charge_processor_id.capitalize} Alive
+      %dd
+        = merchant_account.charge_processor_alive_at.present? ? icon_yes : icon_no
+        = merchant_account.charge_processor_alive_at
+
+      %dt #{merchant_account.charge_processor_id.capitalize} Verified
+      %dd
+        = merchant_account.charge_processor_verified_at.present? ? icon_yes : icon_no
+        = merchant_account.charge_processor_verified_at
+
+      %dt #{merchant_account.charge_processor_id.capitalize} Deleted
+      %dd
+        = merchant_account.charge_processor_deleted_at.present? ? icon_yes : icon_no
+        = merchant_account.charge_processor_deleted_at
+
+  %hr
+  .paragraphs
+    %h3
+      Charge Processor live attributes
+    - if @live_attributes.present?
+      %dl
+        - @live_attributes.each do |key, value|
+          %dt= key
+          %dd
+            %code= value.to_json
+    - else
+      %div{ role: "alert", class: "info" } Charge Processor Merchant information is missing.
+
+  %hr
+  %dl
+    %dt Updated
+    %dd= format_relative_time(merchant_account.updated_at)
+
+    %dt Deleted
+    %dd= format_relative_time(merchant_account.deleted_at, placeholder: icon_no)

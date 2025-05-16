@@ -405,6 +405,8 @@ Rails.application.routes.draw do
         mount FlipperCSP.new(Flipper::UI.app(Flipper)) => :features, as: :flipper_ui
       end
     end
+    # Admin routes
+    draw(:admin)
 
     post "/settings/store_facebook_token", to: "users/oauth#async_facebook_store_token", as: :ajax_facebook_access_token
 

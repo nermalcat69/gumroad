@@ -1,0 +1,18 @@
+= header_section("#{@disputable.formatted_disputed_amount} chargeback occurred.")
+
+%div
+  %p
+    Includes following purchases by
+    = @disputable.customer_email
+  - @disputable.disputed_purchases.each do |purchase|
+    %p
+      Purchase:
+      = link_to purchase.external_id, admin_purchase_url(purchase)
+      - if purchase.card_type == CardType::PAYPAL
+        (PayPal)
+      %br
+      Product:
+      = link_to purchase.link.name, purchase.link.long_url
+
+  %p Creator:
+  = render("admin_mailer/internal_user_info", user: @user)

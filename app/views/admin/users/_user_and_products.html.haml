@@ -1,0 +1,15 @@
+= load_pack("admin_review")
+
+.paragraphs
+  = render("admin/users/user", user:, is_affiliate_user:)
+  - if products.none?
+    .info{ role: "status" }= is_affiliate_user ? "No affiliated products." : "No products created."
+  - products.each do |product|
+    = render("admin/links/product", product:, show_purchases: true, is_affiliate_user:, user_id: user.id)
+  - if pagy.pages > 1
+    .pagination{ role: "navigation", "aria-label": "Pagination" }
+      = link_to("‹ Previous", pagy_url_for(pagy, pagy.prev), class: "button", inert: !pagy.prev)
+      %menu
+        - (1..pagy.pages).map do |page|
+          %li= link_to(page, pagy_url_for(pagy, page), class: "button", inert: page == pagy.page)
+      = link_to("Next ›", pagy_url_for(pagy, pagy.next), class: "button", inert: !pagy.next)

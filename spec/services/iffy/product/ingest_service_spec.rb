@@ -26,7 +26,7 @@ describe Iffy::Product::IngestService do
           {
             body: {
               clientId: product.external_id,
-              clientUrl: product.long_url,
+              clientUrl: admin_link_url(product.unique_permalink, host: DOMAIN),
               name: product.name,
               entity: "Product",
               text: "Name: Test Product Description: A test product description. ",
@@ -89,7 +89,7 @@ describe Iffy::Product::IngestService do
           hash_including(
             body: {
               clientId: product.external_id,
-              clientUrl: product.long_url,
+              clientUrl: admin_link_url(product.unique_permalink, host: DOMAIN),
               name: product.name,
               entity: "Product",
               text: "Name: #{product.name} Description: #{product.description} Rich content text",

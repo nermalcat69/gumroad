@@ -1,0 +1,5 @@
+%section
+  %p User #{@user.id} has been flagged for fraud.
+  %p= link_to "Admin page for user", admin_user_url(@user)
+  %p= @user.name if @user.name.present?
+  %p= @user.email

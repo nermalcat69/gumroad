@@ -1,0 +1,28 @@
+= header_section(@subject)
+
+%section
+  :markdown
+    Hi,
+
+    My name is #{@author_name} and I work on payments, risk, and compliance at Gumroad.
+
+    I wanted to first thank you for choosing Gumroad. We're really excited to help you get paid for your work and grow your business.
+
+  - if @tos_violation_reason == "high chargeback rate"
+    :markdown
+      However, it has come to our attention that your account chargeback rate is over the industry acceptable standard of 1%. Due to agreements that we have with our banking partners and government regulators, we cannot continue supporting sales made by you.
+
+      Your account will be suspended within seven days.
+  - else
+    :markdown
+      However, it has come to our attention that your account, including #{@product_name}, violates our [Terms of Service](https://www.gumroad.com/terms). Due to agreements that we have with our banking partners, we cannot currently support the sale of #{@tos_violation_reason} on Gumroad.
+
+      We ask that you remove or alter this product to be in line with our terms. If that works for you, just let me know and I can take a look and verify everything. If you choose not to do this, we may be forced to suspend your sales, pay out your remaining balance, and close your account.
+
+      For more information regarding what we can and can't process payments for, please see:
+
+      [Prohibited Products and Activities](#{HomePageLinkService.prohibited})
+  :markdown
+    Please note that the balance you have accrued up until this point will still be paid out to you. You can view your balance and payout status on your [balance page](https://app.gumroad.com/balance) and change your payout settings on your [payout page](https://app.gumroad.com/settings/payout).
+
+    Please feel free to contact me any time if you have any questions.

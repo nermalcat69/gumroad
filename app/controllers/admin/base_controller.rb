@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::BaseController < ApplicationController
-  include ActionView::Helpers::DateHelper, ActionView::Helpers::NumberHelper, Impersonate
+  include ActionView::Helpers::DateHelper, ActionView::Helpers::NumberHelper, AdminActionTracker
 
   layout "admin"
 
@@ -92,5 +92,13 @@ class Admin::BaseController < ApplicationController
 
     def xhr_or_json_request?
       request.xhr? || request.format.json?
+    end
+
+    def require_user_has_risk_privileges!
+      render json: { success: false } unless current_user.has_risk_privilege
+    end
+
+    def require_user_has_payout_privileges!
+      render json: { success: false, message: "Failed! You don't have payout privileges." } unless current_user.has_payout_privilege
     end
 end

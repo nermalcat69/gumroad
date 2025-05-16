@@ -1,0 +1,124 @@
+%article.card{ data: { product_id: product.unique_permalink } }
+  .paragraphs
+    %div{ style: "display: flex; gap: var(--spacer-4); align-items: center" }
+      = link_to_if(product.preview_url, image_tag(cdn_url_for(product.preview_url) || asset_path("cover_placeholder.png"), style: "width: var(--form-element-height)", alt: "Preview image"), product.preview_url, target: "_blank")
+      %div{ style: "display: grid; gap: var(--spacer-2)" }
+        %h2
+          = succeed(",") do
+            = product.price_formatted
+          = link_to_unless_current(h(product.name), admin_link_url(product), title: product.id)
+          = link_to(tag.span(nil, class: "icon icon-arrow-up-right-square"), product.long_url, target: "_blank")
+        %div
+          %ul.inline
+            %li= format_relative_time(product.created_at)
+            %li= link_to(user_name(product.user), admin_user_url(product.user))
+          = react_component "AdminProductStats", props: { product_id: product.id }, prerender: true
+
+    .button-group
+      - if policy([:admin, :products, :staff_picked, product]).create?
+        = admin_action label: "Mark as staff-picked", url: admin_product_staff_picked_path(product.id), loading: "Marking as staff-picked...", done: "Marked as staff-picked!", success_message: "Marked as staff-picked!"
+
+  %hr
+  %details
+    %summary
+      %h3 Description
+    .js-product-description.with-rich-text
+      - product_description = product.html_safe_description
+      - if strip_tags(product_description).blank?
+        .info{ role: "status" } No description provided.
+      - else
+        = product_description
+
+  %hr
+  %details
+    %summary
+      %h3 Details
+    - if product.filegroup
+      = react_component "AdminProductAttributesAndInfo", props: { productData: ProductPresenter.new(product: product).admin_info }, prerender: true
+    - else
+      .info{ role: "status" } No additional details.
+
+  %hr
+  %h3 Info
+  %dl
+    %dt Type
+    %dd= product_type_label(product)
+
+    %dt External ID
+    %dd= product.external_id
+
+    %dt Published
+    %dd= product.alive? ? icon_yes : icon_no
+
+    %dt Listed on Discover
+    %dd= product.recommendable? ? icon_yes : icon_no
+
+    %dt Staff-picked
+    %dd= product.staff_picked_product&.not_deleted? ? icon_yes : icon_no
+
+    %dt Preorder
+    %dd= product.is_in_preorder_state? ? icon_yes : icon_no
+
+    - if !product.buy_only?
+      %dt Purchase type
+      %dd= product.purchase_type
+
+      %dt Rental price
+      %dd= MoneyFormatter.format(product.rental_price_cents, product.price_currency_type.to_sym, no_cents_if_whole: true, symbol: true)
+
+    %dt Has stamped PDFs
+    %dd= product.has_stampable_pdfs? ? icon_yes : icon_no
+
+    %dt Streaming
+    %dd= product.streamable? ? icon_yes : icon_no
+
+    %dt Physical
+    %dd= product.is_physical ? icon_yes : icon_no
+
+    %dt Licensed
+    %dd= product.is_licensed ? icon_yes : icon_no
+
+    %dt Is Adult (on product)
+    %dd= product.is_adult? ? icon_yes : icon_no
+
+    %dt Is Adult (on user profile)
+    %dd= product.user.all_adult_products? ? icon_yes : icon_no
+
+    %dt Is Adult (keywords)
+    %dd= product.has_adult_keywords? ? icon_yes : icon_no
+
+    %dt Category
+    %dd
+      - if product.taxonomy.present?
+        = product.taxonomy.ancestry_path.map { |taxonomy| t("taxonomy.#{taxonomy}") }.join(" > ")
+
+    %dt Tags
+    %dd= product.tags.map(&:humanized_name).join(", ")
+
+    %dt Circle Community
+    %dd
+      - if product.has_integration?(CircleIntegration.name)
+        = icon_yes
+      - else
+        = icon_no
+
+    %dt Discord Channel
+    %dd
+      - if product.has_integration?(DiscordIntegration.name)
+        = icon_yes
+      - else
+        = icon_no
+
+  %hr
+  = react_component "AdminProductPurchases", props: { product_id: product.id, is_affiliate_user: is_affiliate_user, user_id: defined?(user_id) && user_id }, prerender: true
+
+  %hr
+  = render("admin/comments/form", commentable: product)
+  = render("admin/comments/index", commentable: product)
+
+  %hr
+  %dl
+    %dt Updated
+    %dd= format_relative_time(product.updated_at)
+    %dt Deleted
+    %dd= format_relative_time(product.deleted_at, placeholder: icon_no)

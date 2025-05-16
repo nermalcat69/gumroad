@@ -81,6 +81,61 @@ describe HelperUserInfoService do
 
         result = service.user_info
         expect(result[:metadata][:links]["View Stripe account"]).to eq("http://app.test.gumroad.com:31337/admin/helper_actions/stripe_dashboard/#{user_with_stripe.external_id}")
+      it "includes recent purchase" do
+        purchase = create(:purchase, purchaser: user, link: create(:product), price_cents: 1_00, created_at: 1.day.ago)
+        expect(service.user_info).to eq({
+                                          user:,
+                                          account_infos: [],
+                                          purchase_infos: [
+                                            "The email #{purchase.email} was used to purchase #{purchase.link.name} for $1 on #{purchase.created_at.to_fs(:formatted_date_full_month)}",
+                                            "The URL of the product is #{purchase.link.long_url}",
+                                            "The creator's support email address is #{purchase.seller.email}",
+                                            "The URL of the purchase receipt is #{receipt_purchase_url(purchase.external_id, host: DOMAIN)}",
+                                            "The internal admin URL of the purchase is #{admin_purchase_url(purchase.external_id, host: DOMAIN)}",
+                                          ],
+                                          recent_purchase: purchase,
+                                        })
+      end
+    end
+  end
+
+  describe "#user_properties" do
+    let(:user) { create(:user) }
+    let(:service) { described_class.new(email: user.email) }
+
+    context "when user is not found" do
+      let(:service) { described_class.new(email: "inexistent@example.com") }
+
+      context "when a purchase with the email is not found" do
+        it "returns nil" do
+          expect(service.user_properties).to eq(nil)
+        end
+      end
+
+      context "when a purchase with the email is found" do
+        it "returns properties with nil values except admin_purchases_url" do
+          purchase = create(:purchase, email: "purchaser_but_not_user@example.com", link: create(:product))
+          service = described_class.new(email: purchase.email)
+          expect(service.user_properties).to eq(
+            name: nil,
+            user_id: nil,
+            stripe_connect_account_id: nil,
+            admin_purchases_url: admin_search_purchases_url(query: purchase.email, host: DOMAIN),
+            last_28_days_sales_total: nil
+          )
+        end
+      end
+    end
+
+    context "when user is found" do
+      it "returns user properties" do
+        expect(service.user_properties).to eq({
+                                                name: user.name,
+                                                user_id: user.id,
+                                                stripe_connect_account_id: nil,
+                                                admin_purchases_url: nil,
+                                                last_28_days_sales_total: 0
+                                              })
       end
     end
 
@@ -91,6 +146,33 @@ describe HelperUserInfoService do
         result = described_class.new(email: user.email).user_info
         expect(result[:prompt]).to include("Failed Purchase Attempt: #{failed_purchase.email} tried to buy #{product.name} for $1 on #{failed_purchase.created_at.to_fs(:formatted_date_full_month)}")
         expect(result[:prompt]).to include("Error: #{failed_purchase.formatted_error_code}")
+      context "when user has a Stripe Connect account" do
+        it "returns non nil stripe_connect_account_id" do
+          merchant_account = create(:merchant_account, charge_processor_merchant_id: "acct_user1")
+          user = merchant_account.user
+          service = described_class.new(email: user.email)
+
+          expect(service.user_properties).to eq({
+                                                  name: user.name,
+                                                  user_id: user.id,
+                                                  stripe_connect_account_id: "acct_user1",
+                                                  admin_purchases_url: nil,
+                                                  last_28_days_sales_total: 0
+                                                })
+        end
+      end
+
+      context "when user has past purchases" do
+        it "returns non nil admin_purchases_url" do
+          create(:purchase, purchaser: user)
+          expect(service.user_properties).to eq({
+                                                  name: user.name,
+                                                  user_id: user.id,
+                                                  stripe_connect_account_id: nil,
+                                                  admin_purchases_url: admin_search_purchases_url(query: user.email, host: DOMAIN),
+                                                  last_28_days_sales_total: 0
+                                                })
+        end
       end
     end
 

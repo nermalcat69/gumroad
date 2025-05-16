@@ -2,10 +2,7 @@
 
 require "csv"
 class AccountingMailer < ApplicationMailer
-  SUBJECT_PREFIX = ("[#{Rails.env}] " unless Rails.env.production?)
-
   default from: ADMIN_EMAIL_WITH_NAME
-
   layout "layouts/email"
 
   def funds_received_report(month, year)

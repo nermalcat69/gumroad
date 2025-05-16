@@ -1,0 +1,59 @@
+.card
+  %div
+    %h3
+      = payment.displayed_amount
+      to
+      = link_to_unless_current h(user_name(payment.user)), admin_user_url(payment.user)
+    = format_relative_time(payment.created_at)
+  %hr
+  %div
+    %dl
+      %dt ID
+      %dd= link_to(payment.id, admin_payout_path(payment))
+
+      %dt Processor
+      %dd= payment.processor
+
+      %dt Payout period end date
+      %dd= payment.payout_period_end_date ? payment.payout_period_end_date.to_fs(:formatted_date_full_month) : "None"
+
+      %dt Fee
+      %dd= Money.new(payment.processor_fee_cents).format(no_cents_if_whole: true, symbol: true)
+
+      %dt State
+      %dd= payment.state
+
+      - if payment.processor == PayoutProcessorType::STRIPE
+        %dt Stripe Transfer ID
+        %dd= link_to(payment.stripe_transfer_id, StripeUrl.transfer_url(payment.stripe_transfer_id, account_id: payment.stripe_connect_account_id))
+
+        %dt Stripe Account ID
+        %dd= link_to(payment.stripe_connect_account_id, StripeUrl.connected_account_url(payment.stripe_connect_account_id))
+
+      - if payment.failed?
+        %dt Failure reason
+        %dd= payment.humanized_failure_reason
+
+      - if payment.bank_account
+        %dt Account holder's name
+        %dd= payment.bank_account.account_holder_full_name
+
+        %dt Account
+        %dd= payment.bank_account.formatted_account
+
+      - else
+        %dt PayPal email
+        %dd= payment.payment_address
+
+        %dt PayPal Transaction ID
+        %dd= payment.txn_id
+
+        %dt PayPal Correlation ID
+        %dd= payment.correlation_id
+
+        - if payment.was_created_in_split_mode
+          %dt Split payment info
+          %dd
+            %pre
+            - payment.split_payments_info.each do |payment_info|
+              = JSON.pretty_generate(payment_info)

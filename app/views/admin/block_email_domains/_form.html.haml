@@ -1,0 +1,32 @@
+= form_for :email_domains, url: url, method: :put do |f|
+  %section
+    %header
+      = header
+    %p
+      For emails like
+      %code
+        john@example.com
+      ,
+      %code
+        john@example.net
+      ,
+      %code
+        john@list.example.org
+      , enter what is to the right of
+      %code
+        @
+      character.
+    %figure.code
+      %figcaption
+        Example with comma-separated items
+      %pre
+        example.com, example.net, list.example.org
+    %figure.code
+      %figcaption
+        Example with items separated by newline
+      %pre
+        example.com
+        example.net
+        list.example.org
+    = f.text_area :identifiers, placeholder: "Enter email domains here", rows: 10
+    = f.button button_label, class: "button primary"

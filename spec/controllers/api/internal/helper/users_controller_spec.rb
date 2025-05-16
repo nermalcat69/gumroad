@@ -529,6 +529,16 @@ describe Api::Internal::Helper::UsersController do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["success"]).to be false
         expect(response.parsed_body["error_message"]).to eq("Enabled status is required.")
+        expect(response.body).to eq({
+          success: true,
+          user_properties: {
+            name: user.name,
+            user_id: user.id,
+            stripe_connect_account_id: nil,
+            admin_purchases_url: nil,
+            last_28_days_sales_total: 0
+          }
+        }.to_json)
       end
     end
   end
