@@ -60,6 +60,8 @@ module User::Risk
   def disable_refunds!
     self.refunds_disabled = true
     save!
+  end
+
   def send_warning_email_and_schedule_suspension_email(transition)
     params = transition.args.first
     return if params && params[:bulk]
