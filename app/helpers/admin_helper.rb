@@ -2,7 +2,6 @@
 
 module AdminHelper
   include IconHelper
-  include ApplicationHelper
 
   def user_name(user)
     user.name.presence || "User " + user.id.to_s
