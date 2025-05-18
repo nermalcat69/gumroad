@@ -109,21 +109,7 @@ class HelperUserInfoService
       if recent_purchase.failed?
         add_failed_purchase_info(recent_purchase, product)
       else
-<<<<<<< HEAD
         add_successful_purchase_info(recent_purchase, product)
-=======
-        @purchase_infos <<
-          "The email #{recent_purchase.email} was used to purchase #{product.name} for " \
-          "#{recent_purchase.formatted_display_price} on " \
-          "#{recent_purchase.created_at.to_fs(:formatted_date_full_month)}"
-        @purchase_infos << "The URL of the product is #{product.long_url}"
-        @purchase_infos << "The creator's support email address is #{recent_purchase.seller.support_email || recent_purchase.seller.form_email }"
-        @purchase_infos << "The URL of the purchase receipt is " \
-                            "#{receipt_purchase_url(recent_purchase.external_id, host: DOMAIN)}"
-        @purchase_infos << "The internal admin URL of the purchase is " \
-                            "#{admin_purchase_url(recent_purchase.external_id, host: DOMAIN)}"
-        @purchase_infos << "License key for the purchase is #{recent_purchase.license_key}" if recent_purchase.license_key.present?
->>>>>>> parent of 8f9ddba2b6 (Remove admin except for index (#28985))
       end
 
       add_refund_policy_info(recent_purchase)
