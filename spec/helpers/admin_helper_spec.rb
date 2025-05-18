@@ -3,6 +3,8 @@
 require "spec_helper"
 
 describe AdminHelper do
+  include ApplicationHelper
+
   describe "markdown" do
     it "changes a string of plain text to the exact same, with paragraph tags and linebreak" do
       input = "To be, or not to be, that is the question"
