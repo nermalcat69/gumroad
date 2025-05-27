@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  [Gumroad](https://gumroad.com) is an e-commerce platform that enables creators to sell products directly to consumers. This repository contains the source code for the Gumroad web application.
+  <a href="https://gumroad.com">Gumroad</a> is an e-commerce platform that enables creators to sell products directly to consumers. This repository contains the source code for the Gumroad web application.
 </p>
 
 ## Table of Contents
@@ -110,6 +110,7 @@ We use `ffprobe` that comes with `FFmpeg` package to fetch metadata from video f
 We use [pdftk](https://www.pdflabs.com/tools/pdftk-server/) to stamp PDF files with the Gumroad logo and the buyers' emails.
 
 - For MacOS: Download from [here](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/pdftk_server-2.02-mac_osx-10.11-setup.pkg)
+  - **Note:** pdftk may be blocked by Apple's firewall. If this happens, go to Settings > Privacy & Security and click "Open Anyways" to allow the installation.
 - For Linux: `sudo apt-get install pdftk`
 
 ### Installation

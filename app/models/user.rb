@@ -9,9 +9,9 @@ class User < ApplicationRecord
   include Flipper::Identifier, FlagShihTzu, CurrencyHelper, Mongoable, JsonData, Deletable, MoneyBalance,
           DeviseInternal, PayoutSchedule, SocialFacebook, SocialTwitter, SocialGoogle, SocialApple, SocialGoogleMobile,
           StripeConnect, Stats, PaymentStats, FeatureStatus, Risk, Compliance, Validations, Taxation, PingNotification,
-          Email, AsyncDeviseNotification, Posts, AffiliatedProducts, Followers, MailerLevel,
+          Email, AsyncDeviseNotification, Posts, AffiliatedProducts, Followers, LowBalanceFraudCheck, MailerLevel,
           DirectAffiliates, AsJson, Tier, Recommendations, Team, AustralianBacktaxes, WithCdnUrl,
-          TwoFactorAuthentication, Versionable, Comments, VipCreator, SignedUrlHelper
+          TwoFactorAuthentication, Versionable, Comments, VipCreator, SignedUrlHelper, Purchases
 
   stripped_fields :name, :facebook_meta_tag, :google_analytics_id, :username, :email, :support_email
 
@@ -517,6 +517,10 @@ class User < ApplicationRecord
     find_by(id: single_key)
   end
 
+  def admin_page_url
+    Rails.application.routes.url_helpers.admin_user_url(self, protocol: PROTOCOL, host: DOMAIN)
+  end
+
   def profile_url(custom_domain_url: nil, recommended_by: nil)
     uri = URI(custom_domain_url || subdomain_with_protocol)
     uri.query = { recommended_by: }.to_query if recommended_by.present?
@@ -975,6 +979,14 @@ class User < ApplicationRecord
     return nil unless has_paypal_account_connected?
 
     paypal_connect_account.paypal_account_details&.dig("primary_email")
+  end
+
+  def purchased_small_bets?
+    small_bets_product_id = GlobalConfig.get("SMALL_BETS_PRODUCT_ID",  2866567)
+
+    purchases.all_success_states_including_test
+      .where(link_id: small_bets_product_id)
+      .exists?
   end
 
   protected

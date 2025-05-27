@@ -2673,6 +2673,13 @@ describe User, :vcr do
     end
   end
 
+  describe "#admin_page_url" do
+    it "returns the admin users page url" do
+      user = create(:user)
+      expect(user.admin_page_url).to eq("#{PROTOCOL}://#{DOMAIN}/admin/users/#{user.id}")
+    end
+  end
+
   describe "#compliance_info_resettable?" do
     it "returns true if the user doesn't have an active Stripe account" do
       user = create(:user_with_compliance_info)
@@ -3269,6 +3276,25 @@ describe User, :vcr do
         other_product.update!(community_chat_enabled: false)
         expect(user.accessible_communities_ids).to eq([])
       end
+    end
+  end
+
+  describe "#purchased_small_bets?" do
+    let(:user) { create(:user) }
+    let(:small_bets_product) { create(:product) }
+
+    before do
+      allow(GlobalConfig).to receive(:get)
+        .with("SMALL_BETS_PRODUCT_ID", 2866567)
+        .and_return(small_bets_product.id)
+    end
+
+    it "returns true if the user has purchased the small bets product" do
+      expect(user.purchased_small_bets?).to eq(false)
+
+      create(:purchase, purchaser: user, link: small_bets_product)
+
+      expect(user.purchased_small_bets?).to eq(true)
     end
   end
 end
