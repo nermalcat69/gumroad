@@ -878,6 +878,64 @@ describe User, :vcr do
         @user.name = sample_string_of_length(256)
         expect(@user).to be_invalid
       end
+
+      describe "email from field validation" do
+        it "allows valid characters" do
+          valid_names = [
+            "John Smith",
+            "Mary O'Connor",
+            "José García",
+            "John-Paul",
+            "Sarah.Smith",
+            "John + Mary",
+            "Mr. Smith Jr.",
+            "John, Smith",
+          ]
+
+          valid_names.each do |name|
+            @user.name = name
+            expect(@user).to be_valid, "Expected '#{name}' to be valid but got errors: #{@user.errors.full_messages.join(', ')}"
+          end
+        end
+
+        it "rejects invalid characters" do
+          invalid_names = [
+            "John (Smith)",
+            "Mary [Jones]",
+            "John <Smith>",
+            "Mary\\Jones",
+            "Mary;Jones",
+            "John:Smith",
+            "Mary@Smith",
+            'John "Smith"',
+            "John\nSmith",
+          ]
+
+          invalid_names.each do |name|
+            @user.name = name
+            expect(@user).to be_invalid, "Expected '#{name}' to be invalid but it was valid"
+            expect(@user.errors[:name]).to include("Your name contains characters that are not allowed. Please try again after removing them.")
+          end
+        end
+
+        it "allows saving a user with invalid name if the name hasn't changed" do
+          @user.name = "John (Smith)"
+          @user.save(validate: false)  # Save with invalid name bypassing validation
+
+          # Now try to update something else
+          @user.email = "new@example.com"
+          expect(@user).to be_valid
+          expect(@user.save).to be true
+        end
+
+        it "prevents saving a user with invalid name if the name is being changed" do
+          @user.save!  # Save first to ensure we're testing an update
+          @user.name = "John (Smith)"
+          expect(@user).to be_invalid
+          expect(@user.save).to be false
+          expect(@user.errors[:name]).to include("Your name contains characters that are not allowed. Please try again after removing them.")
+        end
+      end
     end
 
     describe "username" do

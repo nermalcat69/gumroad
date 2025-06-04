@@ -163,6 +163,7 @@ class User < ApplicationRecord
                        if: :username_changed? # validate only when seller changes their username
 
   validates :name, length: { maximum: MAX_LENGTH_NAME, too_long: "Your name is too long. Please try again with a shorter one." }
+  validate :name_valid_for_email_from_field, if: :name_changed?
   validates :facebook_meta_tag, length: { maximum: MAX_LENGTH_FACEBOOK_META_TAG }
   validates :purchasing_power_parity_limit, allow_nil: true, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 100 }
 
@@ -1170,5 +1171,14 @@ class User < ApplicationRecord
     def has_completed_payouts?
       payments.completed.exists? ||
         made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?
+    end
+
+    def name_valid_for_email_from_field
+      return if name.blank?
+      # Only allow letters (including accented), numbers, spaces, hyphens, periods and apostrophes
+      # and ensure there are no newlines
+      return if !name.match?(/[\n\r]/) && name.match?(/\A[\p{L}\p{N}\s\-\.',+ ]+\z/)
+
+      errors.add(:name, "Your name contains characters that are not allowed. Please try again after removing them.")
     end
 end
