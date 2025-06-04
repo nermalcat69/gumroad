@@ -736,7 +736,7 @@ describe Compliance do
       ["TM", "Turkmenistan"],
       ["TC", "Turks and Caicos Islands"],
       ["TV", "Tuvalu"],
-      ["TR", "Turkey"],
+      ["TR", "Türkiye"],
       ["UG", "Uganda"],
       ["UA", "Ukraine"],
       ["AE", "United Arab Emirates"],
