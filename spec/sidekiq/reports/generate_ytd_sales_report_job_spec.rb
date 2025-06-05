@@ -11,7 +11,7 @@ describe Reports::GenerateYtdSalesReportJob do
   before do
     allow(Purchase).to receive(:search).and_return(es_results_double)
     allow($redis).to receive(:lrange).with(redis_key, 0, -1).and_return(recipient_emails)
-    allow(ReportMailer).to receive(:ytd_sales_report).and_return(mailer_double)
+    allow(AccountingMailer).to receive(:ytd_sales_report).and_return(mailer_double)
   end
 
   describe '#perform' do
@@ -21,7 +21,7 @@ describe Reports::GenerateYtdSalesReportJob do
       before do
         allow(Purchase).to receive(:search).and_call_original
         allow($redis).to receive(:lrange).with(redis_key, 0, -1).and_return(csv_report_emails)
-        allow(ReportMailer).to receive(:ytd_sales_report).and_return(mailer_double)
+        allow(AccountingMailer).to receive(:ytd_sales_report).and_return(mailer_double)
 
         travel_to Time.zone.local(2023, 8, 15) do
           create(:purchase, ip_country: "US", ip_state: "CA", price_cents: 10000, purchase_state: "successful", chargeback_date: nil, created_at: Time.zone.local(2023, 1, 15))
@@ -42,7 +42,7 @@ describe Reports::GenerateYtdSalesReportJob do
 
       it "generates correct CSV data including refunds" do
         captured_csv_string = nil
-        allow(ReportMailer).to receive(:ytd_sales_report) do |csv_string, email|
+        allow(AccountingMailer).to receive(:ytd_sales_report) do |csv_string, email|
           captured_csv_string = csv_string if email == csv_report_emails.first
           mailer_double
         end.and_return(mailer_double)
@@ -69,8 +69,8 @@ describe Reports::GenerateYtdSalesReportJob do
           job.perform
         end
 
-        expect(ReportMailer).to have_received(:ytd_sales_report).with(any_args, csv_report_emails[0]).once
-        expect(ReportMailer).to have_received(:ytd_sales_report).with(any_args, csv_report_emails[1]).once
+        expect(AccountingMailer).to have_received(:ytd_sales_report).with(any_args, csv_report_emails[0]).once
+        expect(AccountingMailer).to have_received(:ytd_sales_report).with(any_args, csv_report_emails[1]).once
         expect(mailer_double).to have_received(:deliver_now).twice
       end
     end
