@@ -59,7 +59,7 @@ module Reports
         }
       }
 
-      results = Purchase.search(es_query) # Assumes Purchase model has search integration
+      results = Purchase.search(es_query)
       aggregations = results.aggregations
 
       csv_string = CSV.generate do |csv|
@@ -84,7 +84,15 @@ module Reports
         end
       end
 
-      ReportMailer.ytd_sales_report(csv_string, "chhabra.harbaksh@gmail.com").deliver_now
+      recipient_emails = $redis.lrange(RedisKey.ytd_sales_report_emails, 0, -1)
+      if recipient_emails.present?
+        recipient_emails.each do |email|
+          ReportMailer.ytd_sales_report(csv_string, email.strip).deliver_now
+          Rails.logger.info "Reports::GenerateYtdSalesReportJob: YTD Sales report sent to #{email.strip}"
+        end
+      else
+        Rails.logger.warn "Reports::GenerateYtdSalesReportJob: No recipient emails found in Redis list '#{RedisKey.ytd_sales_report_emails}'. Report not sent."
+      end
     end
   end
 end
