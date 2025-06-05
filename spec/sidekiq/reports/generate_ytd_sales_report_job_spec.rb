@@ -1,5 +1,6 @@
-require 'spec_helper'
-require 'csv'
+# frozen_string_literal: true
+
+require "spec_helper"
 
 describe Reports::GenerateYtdSalesReportJob do
   let(:job) { described_class.new }
@@ -14,7 +15,7 @@ describe Reports::GenerateYtdSalesReportJob do
     allow(AccountingMailer).to receive(:ytd_sales_report).and_return(mailer_double)
   end
 
-  describe '#perform' do
+  describe "#perform" do
     context "when processing actual purchase records", :sidekiq_inline, :elasticsearch_wait_for_refresh do
       let(:csv_report_emails) { ["report_user1@example.com", "report_user2@example.com"] }
 

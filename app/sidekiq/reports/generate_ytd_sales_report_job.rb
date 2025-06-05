@@ -1,9 +1,9 @@
-require 'csv'
+# frozen_string_literal: true
 
 module Reports
   class GenerateYtdSalesReportJob
     include Sidekiq::Worker
-    sidekiq_options queue: 'low', retry: 3
+    sidekiq_options queue: "low", retry: 3
 
     def perform
       current_year_start = Time.current.beginning_of_year.iso8601
