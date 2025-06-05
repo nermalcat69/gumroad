@@ -20,6 +20,8 @@ describe Reports::GenerateYtdSalesReportJob do
       let(:csv_report_emails) { ["report_user1@example.com", "report_user2@example.com"] }
 
       before do
+        recreate_model_index(Purchase)
+
         allow(Purchase).to receive(:search).and_call_original
         allow($redis).to receive(:lrange).with(redis_key, 0, -1).and_return(csv_report_emails)
         allow(AccountingMailer).to receive(:ytd_sales_report).and_return(mailer_double)
