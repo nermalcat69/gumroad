@@ -87,7 +87,7 @@ module Reports
       recipient_emails = $redis.lrange(RedisKey.ytd_sales_report_emails, 0, -1)
       if recipient_emails.present?
         recipient_emails.each do |email|
-          ReportMailer.ytd_sales_report(csv_string, email.strip).deliver_now
+          AccountingMailer.ytd_sales_report(csv_string, email.strip).deliver_now
           Rails.logger.info "Reports::GenerateYtdSalesReportJob: YTD Sales report sent to #{email.strip}"
         end
       else
