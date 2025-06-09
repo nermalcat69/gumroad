@@ -1,8 +1,8 @@
 import DOMPurify from "dompurify";
 
 /**
- * Sanitizes an HTML string using DOMPurify
- * Allows 'iframe' tags and 'src' attributes in addition to other default safe elements
+ * Sanitizes an HTML string using DOMPurify.
+ * Allows 'iframe' tags and attributes needed for embedded media.
  *
  * @param dirtyHtml The HTML string to sanitize.
  * @returns The sanitized HTML string.
@@ -13,6 +13,8 @@ export const sanitizeHtml = (dirtyHtml: string): string => {
     throw new Error("sanitizeHtml can only be used in client-side environments");
   }
 
-  // gumroad needs iframe tags to embed media
-  return DOMPurify.sanitize(dirtyHtml, { ADD_TAGS: ["iframe"], ADD_ATTR: ["src"] });
+  return DOMPurify.sanitize(dirtyHtml, {
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: ["src", "allow", "width", "height", "title", "sandbox"],
+  });
 };
