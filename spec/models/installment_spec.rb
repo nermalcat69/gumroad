@@ -1009,4 +1009,118 @@ const b = 2;</code></pre>
       end.to change { Iffy::Post::IngestJob.jobs.size }.by(1)
     end
   end
+
+  describe "#featured_image_url" do
+    let(:installment) { create(:installment) }
+
+    it "returns nil when message is blank" do
+      installment.message = ""
+      expect(installment.featured_image_url).to be_nil
+
+      installment.message = nil
+      expect(installment.featured_image_url).to be_nil
+    end
+
+    it "only returns the first element's image src if it's a figure" do
+      installment.message = <<~HTML
+        <figure>
+          <img src='https://example.com/first.jpg' alt='First'>
+          <img src='https://example.com/second.jpg' alt='Second'>
+        </figure>
+      HTML
+      expect(installment.featured_image_url).to eq("https://example.com/first.jpg")
+
+      installment.message = <<~HTML
+        <p>First paragraph</p>
+        <figure>
+          <img src='https://example.com/image.jpg' alt='Test'>
+        </figure>
+      HTML
+      expect(installment.featured_image_url).to be_nil
+
+      installment.message = "text only"
+      expect(installment.featured_image_url).to be_nil
+    end
+  end
+
+  describe "#tags" do
+    let(:installment) { create(:installment) }
+
+    it "returns empty array when message is blank" do
+      installment.message = ""
+      expect(installment.tags).to eq([])
+
+      installment.message = nil
+      expect(installment.tags).to eq([])
+
+      installment.message = "   "
+      expect(installment.tags).to eq([])
+    end
+
+    it "only returns tags from the last element if it's a paragraph" do
+      installment.message = <<~HTML
+        <p>First paragraph</p>
+        <p>#tag1 #tag2 #tag3</p>
+      HTML
+      expect(installment.tags).to eq(["Tag1", "Tag2", "Tag3"])
+
+      installment.message = <<~HTML
+        <p>#tag1 #tag2</p>
+        <div>#not #tags</div>
+      HTML
+      expect(installment.tags).to eq([])
+
+      installment.message = "#not #tags"
+      expect(installment.tags).to eq([])
+    end
+
+    it "returns tags when all words in the last paragraph start with #" do
+      installment.message = <<~HTML
+        <p>#RubyOnRails #Tips&Tricks</p>
+      HTML
+      expect(installment.tags).to eq(["Ruby On Rails", "Tips & Tricks"])
+
+      installment.message = <<~HTML
+        <p>Some content here</p>
+        <p>#Dedupe #Dedupe</p>
+      HTML
+      expect(installment.tags).to eq(["Dedupe"])
+
+      installment.message = <<~HTML
+        <p>Content</p>
+        <p>Not all #tags</p>
+      HTML
+      expect(installment.tags).to eq([])
+    end
+  end
+
+  describe "#message_snippet" do
+    let(:installment) { create(:installment) }
+
+    it "returns empty string when message is blank" do
+      installment.message = ""
+      expect(installment.message_snippet).to eq("")
+
+      installment.message = nil
+      expect(installment.message_snippet).to eq("")
+
+      installment.message = "   "
+      expect(installment.message_snippet).to eq("")
+    end
+
+    it "strips HTML tags from message" do
+      installment.message = "<p>Hello <strong>world</strong>!</p><br><div>Another paragraph</div>"
+      expect(installment.message_snippet).to eq("Hello world! Another paragraph")
+    end
+
+    it "squishes extra whitespace" do
+      installment.message = "  Hello    world  \n\n  with   extra    spaces  "
+      expect(installment.message_snippet).to eq("Hello world with extra spaces")
+    end
+
+    it "truncates to 200 characters with word boundaries" do
+      installment.message = "a " * 105
+      expect(installment.message_snippet).to eq("a " * 98 + "a...")
+    end
+  end
 end

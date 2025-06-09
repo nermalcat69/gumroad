@@ -278,7 +278,14 @@ Rails.application.routes.draw do
     get "/terms", to: "home#terms"
     get "/prohibited", to: "home#prohibited"
     get "/privacy", to: "home#privacy"
-    get "/taxes", to: "home#taxes"
+    get "/taxes", to: redirect("/pricing", status: 301)
+    get "/hackathon", to: "home#hackathon"
+    resource :github_stars, only: [:show]
+
+    namespace :gumroad_blog, path: "blog" do
+      root to: "posts#index"
+      resources :posts, only: [:index, :show], param: :slug, path: "p"
+    end
 
     get "/ifttt/v1/status" => "api/v2/users#ifttt_status"
     get "/ifttt/v1/oauth2/authorize/:code(.:format)" => "oauth/authorizations#show"
@@ -391,19 +398,7 @@ Rails.application.routes.draw do
 
     resources :tags, only: [:index]
 
-    namespace :admin do
-      get "/", to: "base#index"
-      get :impersonate, to: "base#impersonate"
-      delete :unimpersonate, to: "base#unimpersonate"
-      get :redirect_to_stripe_dashboard, to: "base#redirect_to_stripe_dashboard"
-      get "helper_actions/impersonate/:user_id", to: "helper_actions#impersonate", as: :impersonate_helper_action
-      get "helper_actions/stripe_dashboard/:user_id", to: "helper_actions#stripe_dashboard", as: :stripe_dashboard_helper_action
-
-      constraints(lambda { |request| request.env["warden"].authenticate? && request.env["warden"].user.is_team_member? }) do
-        mount SidekiqWebCSP.new(Sidekiq::Web) => :sidekiq, as: :sidekiq_web
-        mount FlipperCSP.new(Flipper::UI.app(Flipper)) => :features, as: :flipper_ui
-      end
-    end
+    draw(:admin)
 
     post "/settings/store_facebook_token", to: "users/oauth#async_facebook_store_token", as: :ajax_facebook_access_token
 
@@ -624,7 +619,7 @@ Rails.application.routes.draw do
     resources :product_duplicates, only: [:create, :show], format: :json
     put "/product_reviews/set", to: "product_reviews#set", format: :json
     resources :product_reviews, only: [:index, :show]
-    resource :product_review_response, only: [:update], format: :json
+    resources :product_review_responses, only: [:update, :destroy], format: :json
     resources :product_review_videos, only: [] do
       scope module: :product_review_videos do
         resource :stream, only: [:show]
@@ -1113,7 +1108,7 @@ Rails.application.routes.draw do
   put "/product_reviews/set", to: "product_reviews#set", format: :json
 
   resources :product_reviews, only: [:index, :show]
-  resource :product_review_response, only: [:update], format: :json
+  resources :product_review_responses, only: [:update, :destroy], format: :json
   resources :product_review_videos, only: [] do
     scope module: :product_review_videos do
       resource :stream, only: [:show]

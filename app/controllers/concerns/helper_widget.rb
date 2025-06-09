@@ -4,19 +4,36 @@ module HelperWidget
   extend ActiveSupport::Concern
 
   included do
-    helper_method :show_helper_widget?, :helper_widget_host, :helper_widget_email_hmac, :helper_customer_metadata, :enable_helper_guide?
+    helper_method :show_helper_widget?, :helper_widget_host, :helper_widget_init_data
+  end
+
+  class_methods do
+    def allow_anonymous_access_to_helper_widget(options = {})
+      before_action :allow_anonymous_access_to_helper_widget, options
+    end
   end
 
   def helper_widget_host
-    ENV.fetch("HELPER_WIDGET_HOST", "https://helper.ai")
+    ENV.fetch("HELPER_WIDGET_HOST", "https://help.gumroad.com")
   end
 
   def show_helper_widget?
-    !Rails.env.test? && request.host == DOMAIN && current_seller && Feature.active?(:helper_widget, current_seller)
+    return false if Rails.env.test?
+    return false if request.host != DOMAIN
+
+    current_seller.present? || allow_anonymous_access_to_helper_widget?
   end
 
-  def enable_helper_guide?
-    Feature.active?(:helper_guide)
+  def allow_anonymous_access_to_helper_widget
+    @allow_anonymous_access_to_helper_widget = true
+  end
+
+  def allow_anonymous_access_to_helper_widget?
+    anonymous_helper_widget_access_enabled? && !!@allow_anonymous_access_to_helper_widget
+  end
+
+  def anonymous_helper_widget_access_enabled?
+    Feature.active?(:anonymous_helper_widget_access) || params[:anonymous_helper_widget_access].present?
   end
 
   def helper_customer_metadata
@@ -33,5 +50,25 @@ module HelperWidget
       GlobalConfig.get("HELPER_WIDGET_SECRET"),
       message
     )
+  end
+
+  def helper_widget_init_data
+    timestamp = (Time.current.to_f * 1000).to_i
+
+    data = {
+      title: "Support",
+      mailboxSlug: "gumroad",
+      iconColor: "#FF90E8",
+      enableGuide: true,
+      timestamp: timestamp,
+    }
+
+    if current_seller.present?
+      data[:email] = current_seller.email
+      data[:emailHash] = helper_widget_email_hmac(timestamp)
+      data[:customerMetadata] = helper_customer_metadata
+    end
+
+    data
   end
 end

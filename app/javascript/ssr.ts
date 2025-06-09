@@ -3,7 +3,23 @@ import "abortcontroller-polyfill/dist/abortcontroller-polyfill-only";
 import "whatwg-fetch";
 import ReactOnRails from "react-on-rails";
 
+import AdminActionButton from "$app/components/server-components/Admin/ActionButton";
+import AdminAddCommentForm from "$app/components/server-components/Admin/AddCommentForm";
+import AdminAddCreditForm from "$app/components/server-components/Admin/AddCreditForm";
+import AdminChangeEmailForm from "$app/components/server-components/Admin/ChangeEmailForm";
+import AdminFlagForFraudForm from "$app/components/server-components/Admin/FlagForFraudForm";
+import AdminManualPayoutForm from "$app/components/server-components/Admin/ManualPayoutForm";
+import AdminMassTransferPurchasesForm from "$app/components/server-components/Admin/MassTransferPurchasesForm";
 import AdminNav from "$app/components/server-components/Admin/Nav";
+import AdminProductAttributesAndInfo from "$app/components/server-components/Admin/ProductAttributesAndInfo";
+import AdminProductPurchases from "$app/components/server-components/Admin/ProductPurchases";
+import AdminProductStats from "$app/components/server-components/Admin/ProductStats";
+import AdminResendReceiptForm from "$app/components/server-components/Admin/ResendReceiptForm";
+import AdminSearchPopover from "$app/components/server-components/Admin/SearchPopover";
+import AdminSuspendForFraudForm from "$app/components/server-components/Admin/SuspendForFraudForm";
+import AdminSuspendForTosForm from "$app/components/server-components/Admin/SuspendForTosForm";
+import AdminUserGuids from "$app/components/server-components/Admin/UserGuids";
+import AdminUserStats from "$app/components/server-components/Admin/UserStats";
 import AffiliatedPage from "$app/components/server-components/AffiliatedPage";
 import AffiliateRequestPage from "$app/components/server-components/AffiliateRequestPage";
 import AffiliatesPage from "$app/components/server-components/AffiliatesPage";
@@ -35,6 +51,8 @@ import EmailsPage from "$app/components/server-components/EmailsPage";
 import FollowersPage from "$app/components/server-components/FollowersPage";
 import GenerateInvoiceConfirmationPage from "$app/components/server-components/GenerateInvoiceConfirmationPage";
 import GenerateInvoicePage from "$app/components/server-components/GenerateInvoicePage";
+import GumroadBlogIndexPage from "$app/components/server-components/GumroadBlog/IndexPage";
+import GumroadBlogPostPage from "$app/components/server-components/GumroadBlog/PostPage";
 import LibraryPage from "$app/components/server-components/LibraryPage";
 import LoginPage from "$app/components/server-components/LoginPage";
 import Nav from "$app/components/server-components/Nav";
@@ -81,13 +99,29 @@ import WishlistsPage from "$app/components/server-components/WishlistsPage";
 import WorkflowsPage from "$app/components/server-components/WorkflowsPage";
 
 ReactOnRails.register({
+  AdminActionButton,
+  AdminAddCommentForm,
+  AdminChangeEmailForm,
+  AdminFlagForFraudForm,
+  AdminManualPayoutForm,
+  AdminMassTransferPurchasesForm,
   AdminNav,
+  AdminProductAttributesAndInfo,
+  AdminProductPurchases,
+  AdminProductStats,
+  AdminResendReceiptForm,
+  AdminSearchPopover,
+  AdminSuspendForFraudForm,
+  AdminSuspendForTosForm,
+  AdminUserGuids,
+  AdminUserStats,
   AdvancedSettingsPage,
   AffiliatedPage,
   AffiliateRequestPage,
   AffiliatesPage,
   Alert,
   AnalyticsPage,
+  AdminAddCreditForm,
   ApplicationEditPage,
   ArchivedProductsPage,
   AudienceCustomersPage,
@@ -116,6 +150,8 @@ ReactOnRails.register({
   FormPage,
   GenerateInvoiceConfirmationPage,
   GenerateInvoicePage,
+  GumroadBlogIndexPage,
+  GumroadBlogPostPage,
   LibraryPage,
   LoginPage,
   MainSettingsPage,

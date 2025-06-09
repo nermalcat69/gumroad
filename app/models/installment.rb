@@ -792,6 +792,41 @@ class Installment < ApplicationRecord
   def has_been_blasted? = blasts.exists?
   def can_be_blasted? = send_emails? && !has_been_blasted?
 
+  def featured_image_url
+    return nil if message.blank?
+
+    fragment = Nokogiri::HTML.fragment(message)
+    first_element = fragment.element_children.first
+    return nil unless first_element&.name == "figure"
+
+    first_element.at_css("img")&.attr("src")
+  end
+
+  def message_snippet
+    return "" if message.blank?
+
+    # Add spaces between paragraphs and line breaks, so that `Hello<br/>World`
+    # becomes `Hello World`.
+    spaced_message = message.split(%r{</p>|<br\s*/?>}i).join(" ")
+
+    strip_tags(spaced_message)
+      .squish
+      .truncate(200, separator: " ", omission: "...")
+  end
+
+  def tags
+    return [] if message.blank?
+
+    fragment = Nokogiri::HTML.fragment(message)
+    last_element = fragment.element_children.last
+    return [] unless last_element&.name == "p"
+
+    tags = last_element.content.split
+    return [] unless tags.all? { |tag| tag.start_with?("#") }
+
+    tags.map { normalize_tag(it) }.uniq
+  end
+
   class InstallmentInvalid < StandardError
   end
 
@@ -881,5 +916,12 @@ class Installment < ApplicationRecord
     def trigger_iffy_ingest
       return unless saved_change_to_name? || saved_change_to_message?
       Iffy::Post::IngestJob.perform_async(id)
+    end
+
+    def normalize_tag(raw)
+      raw.delete_prefix("#")
+        .gsub(/([^[:alnum:]\s])/, ' \1 ')
+        .squish
+        .titleize
     end
 end

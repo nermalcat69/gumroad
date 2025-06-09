@@ -886,7 +886,8 @@ describe("Payments Settings Scenario", type: :feature, js: true) do
           within "dialog" do
             expect(page).to have_content "Confirm country change"
             expect(page).to have_content "Due to limitations with our payments provider, switching your country to #{@update_country} means that you will have to forfeit your remaining balance of #{@user.formatted_balance_to_forfeit}"
-            expect(page).to have_content "Please confirm that you are okay forfeiting your balance."
+            expect(page).to have_content "Please confirm that you're okay forfeiting your balance by typing \"I understand\" below and clicking Confirm."
+            fill_in "I understand", with: "I understand"
             click_on "Confirm"
           end
           wait_for_ajax
@@ -4330,8 +4331,8 @@ describe("Payments Settings Scenario", type: :feature, js: true) do
 
         fill_in("Pay to the order of", with: "Guatemala Creator")
         fill_in("SWIFT / BIC Code", with: "AAAAGTGCXYZ")
-        fill_in("IBAN", with: "GT20AGRO00000000001234567890")
-        fill_in("Confirm IBAN", with: "GT20AGRO00000000001234567890")
+        fill_in("IBAN", with: "GT82TRAJ01020000001210029690")
+        fill_in("Confirm IBAN", with: "GT82TRAJ01020000001210029690")
 
         fill_in("Número de Identificación Tributaria (NIT)", with: "1234567-8")
 
@@ -4350,7 +4351,7 @@ describe("Payments Settings Scenario", type: :feature, js: true) do
         expect(compliance_info.zip_code).to eq("1100")
         expect(compliance_info.phone).to eq("+50231234567")
         expect(compliance_info.birthday).to eq(Date.new(1901, 1, 1))
-        expect(@user.reload.active_bank_account.send(:account_number_decrypted)).to eq("GT20AGRO00000000001234567890")
+        expect(@user.reload.active_bank_account.send(:account_number_decrypted)).to eq("GT82TRAJ01020000001210029690")
         expect(@user.reload.active_bank_account.routing_number).to eq("AAAAGTGCXYZ")
       end
     end

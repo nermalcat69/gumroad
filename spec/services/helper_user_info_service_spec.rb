@@ -24,6 +24,8 @@ describe HelperUserInfoService do
                                         email: user.email,
                                         value: 2250,
                                         links: {
+                                          "Admin (user)": "http://app.test.gumroad.com:31337/admin/users/#{user.id}",
+                                          "Admin (purchases)": "http://app.test.gumroad.com:31337/admin/search_purchases?query=#{CGI.escape(user.email)}",
                                           "Impersonate": "http://app.test.gumroad.com:31337/admin/helper_actions/impersonate/#{user.external_id}"
                                         }
                                       })
@@ -32,9 +34,9 @@ describe HelperUserInfoService do
     context "value calculation" do
       let(:product) { create(:product, user:, price_cents: 100_00) }
 
-      it "returns the higher value between lifetime sales and last-28-day purchases" do
-        # Bought $10.00 of products in the last 28 days.
-        create(:purchase, purchaser: user, price_cents: 10_00, created_at: 30.days.ago)
+      it "returns the higher value between lifetime sales and last-90-day purchases" do
+        # Bought $10.00 of products in the last 90 days.
+        create(:purchase, purchaser: user, price_cents: 10_00, created_at: 95.days.ago)
         create(:purchase, purchaser: user, price_cents: 10_00, created_at: 1.day.ago)
         index_model_records(Purchase)
 

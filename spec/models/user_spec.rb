@@ -2673,6 +2673,13 @@ describe User, :vcr do
     end
   end
 
+  describe "#admin_page_url" do
+    it "returns the admin users page url" do
+      user = create(:user)
+      expect(user.admin_page_url).to eq("#{PROTOCOL}://#{DOMAIN}/admin/users/#{user.id}")
+    end
+  end
+
   describe "#compliance_info_resettable?" do
     it "returns true if the user doesn't have an active Stripe account" do
       user = create(:user_with_compliance_info)
@@ -2991,7 +2998,7 @@ describe User, :vcr do
     end
   end
 
-  describe "#made_a_successful_sale_with_a_stripe_connect_account?" do
+  describe "#made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?" do
     let(:user) { create(:user) }
     let!(:stripe_connect_account) { create(:merchant_account_stripe_connect, user:) }
 
@@ -3002,7 +3009,7 @@ describe User, :vcr do
 
       context "when the Stripe Connect account is alive" do
         it "returns true" do
-          expect(user.made_a_successful_sale_with_a_stripe_connect_account?).to eq(true)
+          expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(true)
         end
       end
 
@@ -3012,7 +3019,7 @@ describe User, :vcr do
         end
 
         it "returns true" do
-          expect(user.made_a_successful_sale_with_a_stripe_connect_account?).to eq(true)
+          expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(true)
         end
       end
     end
@@ -3023,7 +3030,7 @@ describe User, :vcr do
       end
 
       it "returns false" do
-        expect(user.made_a_successful_sale_with_a_stripe_connect_account?).to eq(false)
+        expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(false)
       end
     end
 
@@ -3031,7 +3038,53 @@ describe User, :vcr do
       it "returns false" do
         stripe_connect_account.destroy!
 
-        expect(user.made_a_successful_sale_with_a_stripe_connect_account?).to eq(false)
+        expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(false)
+      end
+    end
+
+    context "when the user has made a successful sale with a PayPal Connect account" do
+      let!(:paypal_connect_account) { create(:merchant_account_paypal, user:) }
+
+      before do
+        create(:purchase, seller: user, link: create(:product, user:), merchant_account: paypal_connect_account)
+      end
+
+      context "when the PayPal Connect account is alive" do
+        it "returns true" do
+          expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(true)
+        end
+      end
+
+      context "when the PayPal Connect account has been deleted" do
+        before do
+          paypal_connect_account.mark_deleted!
+        end
+
+        it "returns true" do
+          expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(true)
+        end
+      end
+    end
+
+    context "when the user has not made a successful sale with a PayPal Connect account" do
+      let!(:paypal_connect_account) { create(:merchant_account_paypal, user:) }
+
+      before do
+        create(:failed_purchase, seller: user, link: create(:product, user:), merchant_account: paypal_connect_account)
+      end
+
+      it "returns false" do
+        expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(false)
+      end
+    end
+
+    context "when the user has no PayPal Connect account" do
+      let!(:paypal_connect_account) { create(:merchant_account_paypal, user:) }
+
+      it "returns false" do
+        paypal_connect_account.destroy!
+
+        expect(user.made_a_successful_sale_with_a_stripe_connect_or_paypal_connect_account?).to eq(false)
       end
     end
   end
@@ -3042,10 +3095,6 @@ describe User, :vcr do
     context "when user has a Stripe Connect account" do
       let!(:stripe_connect_account) { create(:merchant_account_stripe_connect, user:) }
 
-      it "returns true if the Stripe Connect account is alive" do
-        expect(user.eligible_for_abandoned_cart_workflows?).to eq(true)
-      end
-
       it "returns false if the Stripe Connect account has been deleted and there were no linked successful sales" do
         stripe_connect_account.mark_deleted!
 
@@ -3055,6 +3104,23 @@ describe User, :vcr do
       it "returns true if the Stripe Connect account has been deleted and there was at least one successful sale with that Stripe Connect account" do
         create(:purchase, seller: user, link: create(:product, user:), merchant_account: stripe_connect_account)
         stripe_connect_account.mark_deleted!
+
+        expect(user.eligible_for_abandoned_cart_workflows?).to eq(true)
+      end
+    end
+
+    context "when user has a PayPal Connect account" do
+      let!(:paypal_connect_account) { create(:merchant_account_paypal, user:) }
+
+      it "returns false if the PayPal Connect account has been deleted and there were no linked successful sales" do
+        paypal_connect_account.mark_deleted!
+
+        expect(user.eligible_for_abandoned_cart_workflows?).to eq(false)
+      end
+
+      it "returns true if the PayPal Connect account has been deleted and there was at least one successful sale with that PayPal Connect account" do
+        create(:purchase, seller: user, link: create(:product, user:), merchant_account: paypal_connect_account)
+        paypal_connect_account.mark_deleted!
 
         expect(user.eligible_for_abandoned_cart_workflows?).to eq(true)
       end
@@ -3094,10 +3160,6 @@ describe User, :vcr do
           allow(user).to receive(:sales_cents_total).and_return(Installment::MINIMUM_SALES_CENTS_VALUE)
         end
 
-        it "returns true if the Stripe Connect account is alive" do
-          expect(user.eligible_to_send_emails?).to eq(true)
-        end
-
         it "returns false if the Stripe Connect account has been deleted and there were no linked successful sales" do
           stripe_connect_account.mark_deleted!
 
@@ -3107,6 +3169,27 @@ describe User, :vcr do
         it "returns true if the Stripe Connect account has been deleted and there was at least one successful sale with that Stripe Connect account" do
           create(:purchase, seller: user, link: create(:product, user:), merchant_account: stripe_connect_account)
           stripe_connect_account.mark_deleted!
+
+          expect(user.eligible_to_send_emails?).to eq(true)
+        end
+      end
+
+      context "when user has a PayPal Connect account" do
+        let!(:paypal_connect_account) { create(:merchant_account_paypal, user:) }
+
+        before do
+          allow(user).to receive(:sales_cents_total).and_return(Installment::MINIMUM_SALES_CENTS_VALUE)
+        end
+
+        it "returns false if the PayPal Connect account has been deleted and there were no linked successful sales" do
+          paypal_connect_account.mark_deleted!
+
+          expect(user.eligible_to_send_emails?).to eq(false)
+        end
+
+        it "returns true if the PayPal Connect account has been deleted and there was at least one successful sale with that PayPal Connect account" do
+          create(:purchase, seller: user, link: create(:product, user:), merchant_account: paypal_connect_account)
+          paypal_connect_account.mark_deleted!
 
           expect(user.eligible_to_send_emails?).to eq(true)
         end
@@ -3269,6 +3352,25 @@ describe User, :vcr do
         other_product.update!(community_chat_enabled: false)
         expect(user.accessible_communities_ids).to eq([])
       end
+    end
+  end
+
+  describe "#purchased_small_bets?" do
+    let(:user) { create(:user) }
+    let(:small_bets_product) { create(:product) }
+
+    before do
+      allow(GlobalConfig).to receive(:get)
+        .with("SMALL_BETS_PRODUCT_ID", 2866567)
+        .and_return(small_bets_product.id)
+    end
+
+    it "returns true if the user has purchased the small bets product" do
+      expect(user.purchased_small_bets?).to eq(false)
+
+      create(:purchase, purchaser: user, link: small_bets_product)
+
+      expect(user.purchased_small_bets?).to eq(true)
     end
   end
 end
