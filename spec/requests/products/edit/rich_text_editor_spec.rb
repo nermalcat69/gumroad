@@ -368,7 +368,7 @@ describe("Product Edit Rich Text Editor", type: :feature, js: true) do
     sleep 1
     expect(rich_text_editor_input.find("iframe")[:src]).to include "1380521414818557955"
     save_change
-    expect(@product.reload.description).to include "iframe.ly/api/iframe?app=1&url=#{CGI.escape("https://twitter.com/gumroad/status/1380521414818557955")}"
+    expect(@product.reload.description).to include "iframe.ly/api/iframe?app=1&amp;url=#{CGI.escape("https://twitter.com/gumroad/status/1380521414818557955")}"
   end
 
   it "supports button embeds" do
