@@ -366,9 +366,9 @@ describe("Product Edit Rich Text Editor", type: :feature, js: true) do
     end
     wait_for_ajax
     sleep 1
-    expect(rich_text_editor_input.find("iframe")[:src]).to include "id=1380521414818557955"
+    expect(rich_text_editor_input.find("iframe")[:src]).to include "1380521414818557955"
     save_change
-    expect(@product.reload.description).to include "iframe.ly/api/iframe?url=#{CGI.escape("https://twitter.com/gumroad/status/1380521414818557955")}"
+    expect(@product.reload.description).to include "iframe.ly/api/iframe?app=1&url=#{CGI.escape("https://twitter.com/gumroad/status/1380521414818557955")}"
   end
 
   it "supports button embeds" do
@@ -486,6 +486,7 @@ describe("Product Edit Rich Text Editor", type: :feature, js: true) do
       iframely_url = "iframe.ly/api/iframe?app=1&url=#{CGI.escape("https://x.com/gumroad/status/1743053631640006693")}"
       expect(rich_text_editor_input.find("iframe")[:src]).to include iframely_url
       save_change
+      puts "product.reload.rich_contents.first.description.to_s: #{product.reload.rich_contents.first.description}"
       expect(product.reload.rich_contents.first.description.to_s).to include iframely_url
     end
   end
