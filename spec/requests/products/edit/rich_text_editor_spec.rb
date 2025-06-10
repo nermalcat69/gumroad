@@ -472,6 +472,7 @@ describe("Product Edit Rich Text Editor", type: :feature, js: true) do
     end
 
     it "supports embedding tweets" do
+      tweet_url = "https://x.com/gumroad/status/1743053631640006693"
       product = create(:product, user: seller)
       visit edit_link_path(product) + "/content"
       rich_text_editor_input = find("[aria-label='Content editor']")
@@ -479,23 +480,22 @@ describe("Product Edit Rich Text Editor", type: :feature, js: true) do
         click_on "Twitter post"
       end
       expect(page).to have_content("Insert Twitter post")
-      fill_in "URL", with: "https://x.com/gumroad/status/1743053631640006693"
+      fill_in "URL", with: tweet_url
       click_on "Insert"
       expect(page).to_not have_text("URL")
       sleep 0.5 # wait for the editor to update the content
-      tweet_url = "https://x.com/gumroad/status/1743053631640006693"
       escaped_url = CGI.escape(tweet_url)
       iframely_base = "https://cdn.iframe.ly/api/iframe"
 
       expect(rich_text_editor_input.find("iframe")[:src]).to include(iframely_base)
-      expect(rich_text_editor_input.find("iframe")[:src]).to include(escaped_url)
+      expect(rich_text_editor_input.find("iframe")[:src]).to include("url=#{escaped_url}")
 
       save_change
 
       description = product.reload.rich_contents.first.description.first
       expect(description["type"]).to eq("raw")
       expect(description["attrs"]["html"]).to include(iframely_base)
-      expect(description["attrs"]["html"]).to include(escaped_url)
+      expect(description["attrs"]["html"]).to include("url=#{escaped_url}")
     end
   end
 
