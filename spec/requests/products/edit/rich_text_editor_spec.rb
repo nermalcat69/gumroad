@@ -483,11 +483,20 @@ describe("Product Edit Rich Text Editor", type: :feature, js: true) do
       click_on "Insert"
       expect(page).to_not have_text("URL")
       sleep 0.5 # wait for the editor to update the content
-      iframely_url = "iframe.ly/api/iframe?app=1&url=#{CGI.escape("https://x.com/gumroad/status/1743053631640006693")}"
-      expect(rich_text_editor_input.find("iframe")[:src]).to include iframely_url
+
+      tweet_url = "https://x.com/gumroad/status/1743053631640006693"
+      escaped_url = CGI.escape(tweet_url)
+      iframely_base = %r{^iframe\.ly/api/iframe}
+      iframely_params = %r{\?url=#{Regexp.escape(escaped_url)}$}
+
+      expect(rich_text_editor_input.find("iframe")[:src]).to match(iframely_base)
+      expect(rich_text_editor_input.find("iframe")[:src]).to match(iframely_params)
+
       save_change
-      puts "product.reload.rich_contents.first.description.to_s: #{product.reload.rich_contents.first.description}"
-      expect(product.reload.rich_contents.first.description.to_s).to include iframely_url
+
+      description = product.reload.rich_contents.first.description.to_s
+      expect(description).to match(iframely_base)
+      expect(description).to match(iframely_params)
     end
   end
 
