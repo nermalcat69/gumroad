@@ -32,9 +32,9 @@ RSpec.describe SecureExternalId, type: :model do
 
   describe '#secure_external_id' do
     it 'generates a URL-safe, decryptable token' do
-      token = product.secure_external_id
+      token = product.secure_external_id(purpose: 'default')
       expect(token).to be_a(String)
-      found_product = SecurableProduct.find_by_secure_external_id(token)
+      found_product = SecurableProduct.find_by_secure_external_id(token, purpose: 'default')
       expect(found_product).to eq(product)
     end
 
@@ -47,8 +47,8 @@ RSpec.describe SecureExternalId, type: :model do
 
   describe '.find_by_secure_external_id' do
     it 'finds the record for a valid token with default purpose' do
-      token = product.secure_external_id
-      expect(SecurableProduct.find_by_secure_external_id(token)).to eq(product)
+      token = product.secure_external_id(purpose: 'default')
+      expect(SecurableProduct.find_by_secure_external_id(token, purpose: 'default')).to eq(product)
     end
 
     it 'returns nil for a token used with the wrong purpose' do
@@ -57,14 +57,14 @@ RSpec.describe SecureExternalId, type: :model do
     end
 
     it 'returns nil for a token with an invalid signature (tampered)' do
-      token = product.secure_external_id
+      token = product.secure_external_id(purpose: 'default')
       tampered_token = token.slice(0..-2)
-      expect(SecurableProduct.find_by_secure_external_id(tampered_token)).to be_nil
+      expect(SecurableProduct.find_by_secure_external_id(tampered_token, purpose: 'default')).to be_nil
     end
 
     it 'returns nil for an expired token' do
-      token = product.secure_external_id(expires_at: 1.second.ago)
-      expect(SecurableProduct.find_by_secure_external_id(token)).to be_nil
+      token = product.secure_external_id(purpose: 'default', expires_at: 1.second.ago)
+      expect(SecurableProduct.find_by_secure_external_id(token, purpose: 'default')).to be_nil
     end
 
     it 'returns nil for a token from a different model' do
@@ -72,29 +72,29 @@ RSpec.describe SecureExternalId, type: :model do
         self.table_name = 'users'
         include SecureExternalId
       end
-      token = product.secure_external_id
-      expect(AnotherSecurableModel.find_by_secure_external_id(token)).to be_nil
+      token = product.secure_external_id(purpose: 'default')
+      expect(AnotherSecurableModel.find_by_secure_external_id(token, purpose: 'default')).to be_nil
     end
 
     it 'returns nil for a malformed token' do
-      expect(SecurableProduct.find_by_secure_external_id('not-a-real-token')).to be_nil
+      expect(SecurableProduct.find_by_secure_external_id('not-a-real-token', purpose: 'default')).to be_nil
     end
 
     it 'returns nil for a token with an unknown version' do
       outer_payload = { v: '99', d: 'some_data' }
       token = Base64.urlsafe_encode64(outer_payload.to_json, padding: false)
-      expect(SecurableProduct.find_by_secure_external_id(token)).to be_nil
+      expect(SecurableProduct.find_by_secure_external_id(token, purpose: 'default')).to be_nil
     end
 
     it 'returns nil for a non-string token' do
-      expect(SecurableProduct.find_by_secure_external_id(nil)).to be_nil
-      expect(SecurableProduct.find_by_secure_external_id(123)).to be_nil
+      expect(SecurableProduct.find_by_secure_external_id(nil, purpose: 'default')).to be_nil
+      expect(SecurableProduct.find_by_secure_external_id(123, purpose: 'default')).to be_nil
     end
   end
 
   describe 'key rotation' do
     it 'encrypts using the primary key version (v2)' do
-      token = product.secure_external_id
+      token = product.secure_external_id(purpose: 'default')
       decoded_json = Base64.urlsafe_decode64(token)
       outer_payload = JSON.parse(decoded_json, symbolize_names: true)
 
@@ -109,7 +109,7 @@ RSpec.describe SecureExternalId, type: :model do
       old_token = Base64.urlsafe_encode64(outer_payload.to_json, padding: false)
 
       # Expect the current code to decrypt it successfully
-      found_product = SecurableProduct.find_by_secure_external_id(old_token)
+      found_product = SecurableProduct.find_by_secure_external_id(old_token, purpose: 'default')
       expect(found_product).to eq(product)
     end
   end
