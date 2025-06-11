@@ -4,8 +4,8 @@
 # that represent a model instance. It supports key rotation.
 #
 # Configuration:
-# This module requires configuration in your config/credentials.yml.enc or environment variables. The configuration
-# should contain a primary key version and a list of encryption keys for generating secure tokens.
+# This module requires configuration in your config/credentials.yml.enc or environment variables via GlobalConfig.
+# The configuration should contain a primary key version and a list of encryption keys for generating secure tokens.
 # You must provide a primary key version and a list of keys.
 # The primary key is used for encrypting new tokens. All keys are available for decryption.
 #
