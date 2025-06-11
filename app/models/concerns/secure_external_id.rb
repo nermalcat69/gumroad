@@ -25,22 +25,22 @@ module SecureExternalId
 
   # Generates a secure, URL-safe token for the model instance.
   #
+  # @param scope [String] The scope of the token.
   # @param expires_at [Time, nil] The optional expiration timestamp for the token.
-  # @param purpose [String] The purpose of the token.
   # @return [String] The versioned, encrypted, URL-safe token.
-  def secure_external_id(purpose:, expires_at: nil)
-    self.class.encrypt_id(id, purpose: purpose, expires_at: expires_at)
+  def secure_external_id(scope:, expires_at: nil)
+    self.class.encrypt_id(id, scope: scope, expires_at: expires_at)
   end
 
   module ClassMethods
     # Finds a record by its secure external ID.
     #
     # @param token [String] The token to decrypt and use for finding the record.
-    # @param purpose [String] The expected purpose of the token.
+    # @param scope [String] The expected scope of the token.
     # @return [ActiveRecord::Base, nil] The model instance if the token is valid, not expired,
-    #   for the correct model, and has the correct purpose; otherwise nil.
-    def find_by_secure_external_id(token, purpose:)
-      record_id = decrypt_id(token, purpose: purpose)
+    #   for the correct model, and has the correct scope; otherwise nil.
+    def find_by_secure_external_id(token, scope:)
+      record_id = decrypt_id(token, scope: scope)
       find_by(id: record_id) if record_id
     end
 
@@ -48,10 +48,10 @@ module SecureExternalId
     # This is a low-level method; prefer using the instance method `secure_external_id`.
     #
     # @param id [String, Integer] The ID of the record.
+    # @param scope [String] The scope of the token.
     # @param expires_at [Time, nil] The optional expiration timestamp for the token.
-    # @param purpose [String] The purpose of the token.
     # @return [String] The versioned, encrypted, URL-safe token.
-    def encrypt_id(id, purpose:, expires_at: nil)
+    def encrypt_id(id, scope:, expires_at: nil)
       version = primary_key_version
       encryptor = encryptors[version]
       raise KeyNotFound, "Primary key version '#{version}' not found" unless encryptor
@@ -60,7 +60,7 @@ module SecureExternalId
         model: name,
         id: id,
         exp: expires_at&.to_i,
-        pur: purpose
+        scp: scope
       }
 
       encrypted_data = encryptor.encrypt_and_sign(inner_payload.to_json)
@@ -77,9 +77,9 @@ module SecureExternalId
     # This is a low-level method; prefer using `find_by_secure_external_id`.
     #
     # @param token [String] The token to decrypt.
-    # @param purpose [String] The expected purpose of the token.
+    # @param scope [String] The expected scope of the token.
     # @return [String, Integer, nil] The ID if the token is valid; otherwise nil.
-    def decrypt_id(token, purpose:)
+    def decrypt_id(token, scope:)
       return nil unless token.is_a?(String)
 
       decoded_json = Base64.urlsafe_decode64(token)
@@ -96,7 +96,7 @@ module SecureExternalId
       inner_payload = JSON.parse(decrypted_json, symbolize_names: true)
 
       return nil if inner_payload[:model] != name
-      return nil if inner_payload[:pur] != purpose
+      return nil if inner_payload[:scp] != scope
       return nil if inner_payload[:exp] && Time.current.to_i > inner_payload[:exp]
 
       inner_payload[:id]
