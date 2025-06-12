@@ -6,7 +6,6 @@ class RedisKey
     def number_of_creators = "company_page:number_of_creators"
     def prev_week_payout_usd = "homepage:prev_week_payout_usd"
     def balance_stats_sales_caching_threshold = "balance_stats:sales_caching_threshold"
-    def balance_stats_days_since_sign_in_caching_threshold = "balance_stats:days_since_sign_in_caching_threshold"
     def balance_stats_users_excluded_from_caching = "balance_stats:users_excluded_from_caching"
     def balance_stats_scheduler_minutes_between_jobs = "balance_stats_scheduler:minutes_between_jobs"
     def elasticsearch_indexer_worker_ignore_404_errors_on_indices = "elasticsearch_indexer_worker:ignore_404_errors_on_indices"
@@ -40,5 +39,6 @@ class RedisKey
     def create_vat_report_job_max_execution_time_seconds = "create_vat_report_job:max_execution_time_seconds"
     def transcoded_videos_recentness_limit_in_months = "transcoded_videos_recentness_limit_in_months"
     def generate_fees_by_creator_location_job_max_execution_time_seconds = "generate_fees_by_creator_location_job:max_execution_time_seconds"
+    def ytd_sales_report_emails = "reports:ytd_sales_report_emails"
   end
 end

@@ -54,7 +54,8 @@ describe Api::Internal::Helper::UsersController do
                                                                  "email" => user.email,
                                                                  "value" => 0,
                                                                  "links" => {
-                                                                   "Admin" => "http://app.test.gumroad.com:31337/admin/users/#{user.id}",
+                                                                   "Admin (user)" => "http://app.test.gumroad.com:31337/admin/users/#{user.id}",
+                                                                   "Admin (purchases)" => "http://app.test.gumroad.com:31337/admin/search_purchases?query=#{CGI.escape(user.email)}",
                                                                    "Impersonate" => "http://app.test.gumroad.com:31337/admin/helper_actions/impersonate/#{user.external_id}",
                                                                  }
                                                                })
@@ -105,6 +106,33 @@ describe Api::Internal::Helper::UsersController do
         expect(response.parsed_body["success"]).to be true
         expect(response.parsed_body["status"]).to eq("Compliant")
         expect(response.parsed_body["updated_at"]).to be_nil
+        expect(response.parsed_body["appeal_url"]).to be_nil
+      end
+    end
+
+    context "when user is suspended locally but not found in iffy api" do
+      let(:suspended_user) { create(:tos_user) }
+      let(:suspension_comment) { create(:comment, commentable: suspended_user, comment_type: Comment::COMMENT_TYPE_SUSPENDED, created_at: 2.days.ago) }
+
+      before do
+        suspension_comment
+      end
+
+      it "returns suspended status from local data" do
+        successful_response = instance_double(
+          HTTParty::Response,
+          code: 200,
+          success?: true,
+          parsed_response: { "data" => [] }
+        )
+        allow(HTTParty).to receive(:get).and_return(successful_response)
+
+        get :user_suspension_info, params: { email: suspended_user.email }
+
+        expect(response).to have_http_status(:success)
+        expect(response.parsed_body["success"]).to be true
+        expect(response.parsed_body["status"]).to eq("Suspended")
+        expect(response.parsed_body["updated_at"]).to eq(suspension_comment.created_at.as_json)
         expect(response.parsed_body["appeal_url"]).to be_nil
       end
     end
