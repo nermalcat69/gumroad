@@ -107,19 +107,18 @@ module SecureExternalId
     end
 
     private
+      def config
+        @config ||= GlobalConfig.dig(:secure_external_id, default: {})
+      end
 
-    def config
-      @config ||= GlobalConfig.dig(:secure_external_id, default: {})
-    end
+      def primary_key_version
+        config[:primary_key_version]
+      end
 
-    def primary_key_version
-      config[:primary_key_version]
-    end
-
-    def encryptors
-      @encryptors ||= (config[:keys] || {}).transform_values do |key|
-        ActiveSupport::MessageEncryptor.new(key, cipher: 'aes-256-gcm')
-      end.with_indifferent_access
-    end
+      def encryptors
+        @encryptors ||= (config[:keys] || {}).transform_values do |key|
+          ActiveSupport::MessageEncryptor.new(key, cipher: "aes-256-gcm")
+        end.with_indifferent_access
+      end
   end
 end
