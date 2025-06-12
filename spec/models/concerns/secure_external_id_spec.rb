@@ -24,12 +24,12 @@ RSpec.describe SecureExternalId do
   let(:test_instance) { test_class.new }
 
   before do
-    allow(GlobalConfig).to receive(:dig).with(:secure_external_id, default: {}).and_return({
-                                                                                             primary_key_version: "1",
-                                                                                             keys: {
-                                                                                               "1" => "a" * 32 # 32 byte key for aes-256-gcm
-                                                                                             }
-                                                                                           })
+    allow(GlobalConfig).to receive(:dig)
+      .with(:secure_external_id, default: {})
+      .and_return({
+                    primary_key_version: "1",
+                    keys: { "1" => "a" * 32 }
+                  })
   end
 
   describe "#secure_external_id" do
@@ -40,10 +40,12 @@ RSpec.describe SecureExternalId do
     end
 
     it "raises error when primary key not found" do
-      allow(GlobalConfig).to receive(:dig).with(:secure_external_id, default: {}).and_return({
-                                                                                               primary_key_version: "2",
-                                                                                               keys: { "1" => "a" * 32 }
-                                                                                             })
+      allow(GlobalConfig).to receive(:dig)
+        .with(:secure_external_id, default: {})
+        .and_return({
+                      primary_key_version: "2",
+                      keys: { "1" => "a" * 32 }
+                    })
 
       expect do
         test_instance.secure_external_id(scope: "test")
