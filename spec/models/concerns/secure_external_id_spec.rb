@@ -106,5 +106,24 @@ RSpec.describe SecureExternalId do
       token = test_instance.secure_external_id(scope: "test")
       expect(other_class.find_by_secure_external_id(token, scope: "test")).to be_nil
     end
+
+    it "supports key rotation" do
+      token_v1 = test_instance.secure_external_id(scope: "test")
+
+      allow(GlobalConfig).to receive(:dig)
+        .with(:secure_external_id, default: {})
+        .and_return({
+                      primary_key_version: "2",
+                      keys: {
+                        "1" => "a" * 32,
+                        "2" => "b" * 32
+                      }
+                    })
+
+      expect(test_class.find_by_secure_external_id(token_v1, scope: "test")).to be_a(test_class)
+
+      token_v2 = test_instance.secure_external_id(scope: "test")
+      expect(test_class.find_by_secure_external_id(token_v2, scope: "test")).to be_a(test_class)
+    end
   end
 end
