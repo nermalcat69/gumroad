@@ -1,0 +1,352 @@
+<header class="grid override border-b border-black grid-cols-1 bg-[#f0f0f0]">
+  <div class="relative flex items-center justify-center px-4 py-32 lg:px-[8vw] md:pb-20 md:pt-20">
+    <div class="flex flex-col max-w-screen-lg items-center gap-6 text-center z-10">
+      <%= image_tag "smallbets/smallbets.svg", alt: "Small bets", class: "h-48" %>
+      <h1 class="leading-none text-5xl md:text-7xl">You made your $1.<br>Now let's make many more.</h1>
+      <div class="text-xl max-w-md lg:text-2xl lg:max-w-3xl">Small Bets is a community of creators who support and learn from each other how to build a business, one small bet at a time.</div>
+      <div class="mt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-[384px] sm:max-w-none sm:w-auto mx-auto">
+        <div class="w-full sm:w-auto">
+          <%= render "home/shared/button", text: "Join Small Bets", url: "https://dvassallo.gumroad.com/l/small-bets", variant: "light", size: "default" %>
+        </div>
+      </div>
+      <div class="text-lg text-muted mt-4">
+        Join <span class="font-medium text-black">6,947 amazing people</span> and get <br> immediate access to our support network.
+      </div>
+    </div>
+  </div>
+<div class="grid grid-cols-2 lg:grid-cols-4 w-full border-t border-black h-full override" role="list">
+  <div class="flex flex-col items-center justify-end p-4 md:p-6 h-full border-b border-black md:border-b-0">
+    <%= image_tag "smallbets/hassan.png", alt: "Hassan", class: "w-32 h-32 object-contain mb-4" %>
+    <div class="text-base font-medium text-black text-center">Hassan runs 3 newsletters<br>with over 22k subscribers</div>
+  </div>
+    <div class="flex flex-col items-center justify-end p-4 md:p-6 h-full border-l md:border-x border-black border-b md:border-b-0">
+    <%= image_tag "smallbets/greg.png", alt: "Greg", class: "w-32 h-32 object-contain mb-4" %>
+    <div class="text-base font-medium text-black text-center">Greg made $50k<br>writing tech books</div>
+  </div>
+  <div class="flex flex-col items-center justify-end p-4 md:p-6 h-full">
+    <%= image_tag "smallbets/steph.png", alt: "Steph", class: "w-32 h-32 object-contain mb-4" %>
+    <div class="text-base font-medium text-black text-center">Steph sells Cinema4D<br>material packs</div>
+  </div>
+  <div class="flex flex-col items-center justify-end border-l border-black p-4 md:p-6 h-full">
+    <%= image_tag "smallbets/xinran.png", alt: "Xinran", class: "w-32 h-32 object-contain mb-4" %>
+    <div class="text-base font-medium text-black text-center">5K people just signed to<br>Xinran's AI course</div>
+  </div>
+</div>
+</header>
+
+
+<div class="flex flex-col border-black overflow-visible lg:flex-row border-b">
+  <div class="bg-black py-24 p-8 border-b sm:p-32 md:p-32 lg:py-24 lg:w-1/2 lg:border-b-0 lg:border-r xl:p-36 flex items-center justify-center">
+    <div class="relative w-full max-w-xl">
+      <%= image_tag "about/book-gumhead.svg",
+          alt: "Don't do it alone illustration",
+          class: "w-full h-auto object-cover mx-auto max-w-lg" %>
+      <div class="absolute top-[-4rem] left-0 sm:left-[-4rem] bg-white rounded-3xl px-6 sm:px-12 py-4 sm:py-8 border border-black">
+        <p class="text-xl font-medium m-0">Don't do it alone...</p>
+      </div>
+    </div>
+  </div>
+  <div class="bg-orange py-24 p-8 flex items-center justify-center sm:p-32 md:p-32 lg:py-24 lg:w-1/2 xl:p-32">
+    <div class="relative">
+      <%= image_tag "smallbets/friends-gumhead.png",
+          alt: "Sell anywhere feature illustration",
+          class: "w-full h-auto object-cover mx-auto max-w-lg" %>
+      <div class="absolute top-[-4rem] left-0 sm:left-[-4rem] bg-white rounded-3xl px-6 sm:px-12 py-4 sm:py-8 border border-black">
+        <p class="text-xl font-medium m-0">...do it with friends, instead!</p>
+      </div>
+      <%= image_tag "about/exciting.svg",
+          loading: "lazy",
+          alt: "Exciting sticker",
+          class: "absolute bottom-[-4rem] sm:bottom-[-12rem] right-[0rem] sm:right-[-10rem] lg:right-[-4rem] w-36 sm:w-48 md:w-56 xl:w-80 transform rotate-6 z-10",
+          style: "will-change: transform; transform: translate3d(0px, 1.5956vh, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg); transform-style: preserve-3d;" %>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto text-center flex flex-col gap-4 px-8 py-24">
+    <h2 class="text-5xl lg:text-6xl lg:leading-tight">
+      One-time payment, Lifetime access
+    </h2>
+    <p class="text-xl max-w-2xl mx-auto">
+      100% satisfaction or yout money back. No questions asked.
+    </p>
+  </div>
+</div>
+
+<div class="flex flex-col overflow-hidden border-y border-black lg:flex-row">
+  <div class="flex items-center justify-center border-b border-black bg-purple lg:w-1/2 lg:border-b-0 lg:border-r">
+    <div class="relative max-w-4xl overflow-hidden">
+      <%= image_tag "smallbets/features-small-bets.svg", class: "h-auto w-full", data: { parallax: true }, alt: "Illustration showing small bets feature" %>
+    </div>
+  </div>
+  <div class="flex items-center justify-center bg-black p-8 py-16 text-white sm:p-12 md:p-16 lg:w-1/2 xl:p-32">
+    <div class="max-w-2xl space-y-12 md:space-y-16">
+      <div class="space-y-4">
+        <h3 class="text-3xl font-medium text-purple lg:text-4xl xl:text-5xl">
+          Scale beyond your first product
+        </h3>
+        <p class="text-lg lg:text-xl xl:text-2xl">
+          Learn how successful creators built multiple income streams, from digital products to courses and memberships.
+        </p>
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-3xl font-medium text-purple lg:text-4xl xl:text-5xl">
+          Get feedback
+        </h3>
+        <p class="text-lg lg:text-xl xl:text-2xl">
+          Test you next product idea with our community before investing time and energy - the "small bets" approach that works.
+        </p>
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-3xl font-medium text-purple lg:text-4xl xl:text-5xl">
+          Connect with fellow creators
+        </h3>
+        <p class="text-lg lg:text-xl xl:text-2xl">
+          Join creators from music to architecture, woodworking to education - all building businesses around what they're good at.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="w-full bg-[#f0f0f0] py-16">
+  <div class="max-w-7xl mx-auto text-center flex flex-col gap-4 px-8 pb-12">
+    <h2 class="text-5xl lg:text-6xl lg:leading-tight">Start small, Win big</h2>
+    <p class="text-xl max-w-3xl mx-auto">Perfect for creators who want to experiment with new ideas without risking everything.</p>
+  </div>
+  <div class="max-w-xl lg:max-w-7xl mx-auto px-8">
+    <div class="override grid grid-cols-1 gap-8 lg:grid-cols-3" role="list">
+      <%= render "home/shared/review_card",
+        title: "Rethought their whole side-business strategy",
+        name: "Greg Gilbert",
+        description: "I rarely recommend products publicly, but the Small Bets community offers incredible value for the price.",
+        image_url: image_url("smallbets/greggilbert.png"),
+        bg_color: "bg-pink"
+      %>
+      <%= render "home/shared/review_card",
+        title: "Went from $0 to $500 a month with KDP",
+        name: "Milly Barker",
+        description: "Watching just 6 hours of Daniel's Small Bets Fundamentals recordings has done me more good than 3+ years of striving to figure things out myself. Gratitude doesn't even come close.",
+        image_url: image_url("smallbets/millybarker.png"),
+        bg_color: "bg-yellow"
+      %>
+      <%= render "home/shared/review_card",
+        title: "Found a business partner",
+        name: "Shivam Dewan",
+        description: "Small Bets is my new idea generator. If you need inspiration and a supportive community, this is the place to be.",
+        image_url: image_url("smallbets/shivamdewan.png"),
+        bg_color: "bg-purple"
+      %>
+    </div>
+  </div>
+</div>
+
+<div class="flex flex-col border-t border-black overflow-hidden lg:flex-row">
+  <div class="bg-white py-16 px-8 flex items-center justify-center sm:p-12 md:p-16 lg:w-1/2 xl:p-24">
+    <div class="max-w-2xl space-y-12 md:space-y-8">
+      <div class="space-y-4">
+        <h3 class="font-medium text-3xl lg:text-4xl xl:text-5xl">
+          Video library of 50 classes
+        </h3>
+        <p class="text-lg lg:text-xl xl:text-2xl">
+          90 hours of high quality education on all topics in one place to level up your knowledge.
+        </p>
+      </div>
+      <ul class="grid grid-cols-1 gap-3 pl-0 text-lg md:grid-cols-2">
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          Make $500 on Upwork by Monday - Sean O'Dowd
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          Emerging from the void on X - Daniel Vassallo
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          Growing on Substack - Elle Griffin
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          AI for the rest of us - Sairam Sundaresan
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          Intro to SEO - Jordan O'Connor
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          Bulding & launching macOS apps with SwiftUI - Grace Huang
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          A practical guide to self-employment taxes - Catherine Cusick
+        </li>
+        <li class="flex items-center">
+          <span class="mr-3 flex items-center justify-center w-8 h-8">
+            <%= icon "solid-check-circle" %>
+          </span>
+          Crowdfunding crash course - Tugra Sahiner
+        </li>
+        <li class="flex items-center">
+          +42 more!
+        </li>
+      </ul>
+    </div>
+  </div>
+    <div class="bg-yellow lg:w-1/2 lg:border-l overflow-hidden">
+      <div class="relative w-full h-full overflow-hidden">
+        <%= image_tag "smallbets/videolibrary.svg",
+            alt: "Video library of 50 classes",
+            class: "w-full h-full object-cover" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex flex-col border-t border-black gap-16 px-8 py-16 lg:px-[4vw] lg:py-24 lg:gap-24">
+  <div class="flex flex-col justify-center gap-10 mx-auto text-center max-w-7xl">
+    <h2 class="text-5xl md:text-6xl lg:text-7xl">Looking for a more bespoke help?</h2>
+    <p class="text-lg md:text-2xl lg:text-3xl">Just @mention any of these always available resident experts and <br> they will be more than happy to help you out!</p>
+  </div>
+  <div class="override grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" role="list">
+    <% expert_card = [
+      {
+        bg_color: "bg-purple",
+        name: "Kilian Ekamp",
+        image_url: image_url("smallbets/kilianekamp.png"),
+        twitter_url: "https://x.com/kilianekamp",
+        linkedin_url: "https://www.linkedin.com/in/kilianekamp/",
+        tags: ["coding for non-coders", "youtube", "education", "chatgpt"]
+      },
+      {
+        bg_color: "bg-[#98282A]",
+        name: "Daniel Vassallo",
+        image_url: image_url("smallbets/vassallo.png"),
+        twitter_url: "https://x.com/dvassallo",
+        linkedin_url: "https://www.linkedin.com/in/danielvassallo/",
+        tags: ["audience building", "communities", "digital products", "marketing"],
+      },
+      {
+        bg_color: "bg-orange",
+        name: "Krystian Zun",
+        image_url: image_url("smallbets/krystianzun.png"),
+        twitter_url: "https://twitter.com/KrystianZun",
+        linkedin_url: "https://x.com/krystianzun",
+        tags: ["ui/ux", "web design", "branding", "rapid prototyping"]
+      },
+      {
+        bg_color: "bg-green",
+        name: "Nesters Kovalkovs",
+        image_url: image_url("smallbets/nesterskovalkovs.png"),
+        twitter_url: "https://www.linkedin.com/in/nestersk/",
+        linkedin_url: "https://www.linkedin.com/in/nesterskovalkov",
+        tags: ["seo", "e-commerce", "shopify", "conversion rate optimization"]
+      },
+      {
+        bg_color: "bg-yellow",
+        name: "Ira Zayats",
+        image_url: image_url("smallbets/irazayats.png"),
+        twitter_url: "https://x.com/izayats",
+        linkedin_url: "https://www.linkedin.com/in/izayats/",
+        tags: ["campfire mods", "ruby", "rails"]
+      },
+      {
+        bg_color: "bg-pink",
+        name: "Peter Askew",
+        image_url: image_url("smallbets/peteraskew.png"),
+        twitter_url: "https://x.com/searchbound",
+        linkedin_url: "https://www.linkedin.com/in/peteraskew/",
+        tags: ["domains", "wordpress", "shopify", "job boards", "directories"]
+      },
+      {
+        bg_color: "bg-[#B23386]",
+        name: "Fernando Torres",
+        image_url: image_url("smallbets/fernandotorres.png"),
+        twitter_url: "https://x.com/YvrFernando",
+        linkedin_url: "https://www.linkedin.com/in/fernandotorres91/",
+        tags: ["amazon fba", "physical products", "manufacturing"]
+      },
+      {
+        bg_color: "bg-purple",
+        name: "Hassan Osman",
+        image_url: image_url("smallbets/hassanosman.png"),
+        twitter_url: "https://x.com/AuthorOnTheSide",
+        linkedin_url: "https://www.linkedin.com/in/hassano",
+        tags: ["amazon kdp", "udemy", "writing", "podcasting", "newsletters", "beehiiv"]
+      },
+      {
+        bg_color: "bg-[#98282A]",
+        name: "Katt Risen",
+        image_url: image_url("smallbets/kattrisen.png"),
+        twitter_url: "https://x.com/kattrisen",
+        linkedin_url: "https://www.linkedin.com/in/katt-risen",
+        tags: ["no-code", "newsletters", "solopreneur tools", "job boards", "directories"]
+      },
+      {
+        bg_color: "bg-yellow",
+        name: "Sairam Sundaresan",
+        image_url: image_url("smallbets/sairamsundaresan.png"),
+        twitter_url: "https://x.com/DSaience",
+        linkedin_url: "https://www.linkedin.com/in/sairam-sundaresan",
+        tags: ["ai apps", "ai research", "ai coding", "writing with ai"]
+      },
+      {
+        bg_color: "bg-red",
+        name: "Greg Lim",
+        image_url: image_url("smallbets/greglim.png"),
+        twitter_url: "https://x.com/greglim81",
+        tags: ["amazon kdp", "udemy", "tech writing"]
+      },
+      {
+        bg_color: "bg-orange",
+        name: "Francesco Ambrosiano",
+        image_url: image_url("smallbets/francescoambrosiano.png"),
+        twitter_url: "https://x.com/giftedio",
+        linkedin_url: "https://www.linkedin.com/in/francescoambrosiano/",
+        tags: ["google ads", "facebook ads"]
+      },
+      {
+        bg_color: "bg-purple",
+        name: "Espree Devora",
+        image_url: image_url("smallbets/espreedevora.png"),
+        twitter_url: "https://x.com/EspreeDevora",
+        linkedin_url: "https://www.linkedin.com/in/espree/",
+        tags: ["podcasting"]
+      }
+    ] %>
+    <% expert_card.each do |expert| %>
+      <%= render "home/shared/expert_card",
+        image_url: expert[:image_url],
+        name: expert[:name],
+        tags: expert[:tags],
+        twitter_url: expert[:twitter_url],
+        linkedin_url: expert[:linkedin_url],
+        bg_color: expert[:bg_color]
+      %>
+    <% end %>
+  </div>
+</div>
+
+<div class="border-t border-black bg-pink px-8 py-16 lg:px-[4vw] lg:py-24">
+  <div class="flex flex-col gap-8 max-w-5xl mx-auto lg:items-center">
+    <h1 class="font-medium text-center text-4xl sm:text-5xl lg:text-7xl"> Ready to turn that <br> $1 into $1000?</h1>
+    <%= render "home/shared/button", text: "Join Small Bets now", url: "https://dvassallo.gumroad.com/l/small-bets" %>
+  </div>
+</div>
+
+<%= render "home/shared/footer" %>
+

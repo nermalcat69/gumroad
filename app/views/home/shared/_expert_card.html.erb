@@ -1,0 +1,27 @@
+<div class="rounded-lg border border-black bg-white overflow-hidden flex flex-col w-full mx-auto">
+  <div class="relative w-full h-56 flex items-center justify-center <%= bg_color %>">
+    <img src="<%= image_url %>" alt="<%= name %>" class="w-full h-full object-cover" />
+  </div>
+  <div class="flex-1 flex flex-col justify-between p-8 border-t border-black">
+    <div>
+      <div class="text-2xl font-medium mb-4"><%= name %></div>
+      <div class="flex flex-wrap gap-3 mb-6">
+        <% tags.each do |tag| %>
+          <span class="px-4 py-2 border border-black rounded-full text-base"><%= tag %></span>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex gap-4 mt-auto">
+      <% if twitter_url.present? %>
+        <a href="<%= twitter_url %>" target="_blank" rel="noopener" class="hover:opacity-80">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 5.924c-.793.352-1.646.59-2.54.698a4.48 4.48 0 0 0 1.963-2.475 8.94 8.94 0 0 1-2.828 1.082A4.48 4.48 0 0 0 16.11 4c-2.485 0-4.5 2.015-4.5 4.5 0 .353.04.697.116 1.027C7.728 9.37 4.1 7.6 1.67 4.905c-.387.664-.61 1.437-.61 2.262 0 1.56.794 2.936 2.003 3.744a4.48 4.48 0 0 1-2.037-.563v.057c0 2.18 1.55 4.002 3.604 4.417-.377.103-.775.158-1.186.158-.29 0-.57-.028-.844-.08.57 1.78 2.23 3.078 4.19 3.113A8.98 8.98 0 0 1 2 19.54a12.68 12.68 0 0 0 6.88 2.017c8.26 0 12.78-6.84 12.78-12.78 0-.195-.004-.39-.013-.583A9.14 9.14 0 0 0 24 4.59a8.98 8.98 0 0 1-2.54.697z"/></svg>
+        </a>
+      <% end %>
+      <% if linkedin_url.present? %>
+        <a href="<%= linkedin_url %>" target="_blank" rel="noopener" class="hover:opacity-80">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.29c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.29h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.18-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg>
+        </a>
+      <% end %>
+    </div>
+  </div>
+</div>
