@@ -27,11 +27,23 @@
   end
 
   def logo_link(options = {})
+    context = discover_layout_context(params, request)
+    logo_classes = "#{options[:image_class]}"
+
+    case context
+    when 'discover-with-taxonomy
+      logo_classes += ""
+    when 'discover-without-taxonomy'
+      logo_classes += " invert"
+    else
+      logo_classes += " dark:invert"
+    end
+
     link_to "/", class: options[:class] do
       image_tag "logo.svg",
         loading: "lazy",
-        alt: "",
-        class: "#{options[:image_class]} dark:invert"
+        alt: "Gumroad",
+        class: logo_classes
     end
   end
 
@@ -72,9 +84,22 @@
       end
     end
   end
+
+  def header_container_classes
+    context = discover_layout_context(params, request)
+
+    case context
+    when 'discover-with-taxonomy'
+      "justify-between bg-white border-b border-black top-0 left-0 right-0 z-50 pr-4 pl-4 h-20 sticky flex lg:pl-8 lg:pr-0 discover custom-sections"
+    when 'discover-without-taxonomy'
+      "justify-between bg-gray-800 border-b border-white/[.35] top-0 left-0 right-0 z-50 pr-4 pl-4 h-20 sticky flex lg:pl-8 lg:pr-0 discover custom-sections dark-theme"
+    else
+      "justify-between bg-white border-b border-black top-0 left-0 right-0 z-50 pr-4 pl-4 h-20 sticky flex lg:pl-8 lg:pr-0 dark:bg-black dark:border-b-white/[.35]"
+    end
+  end
 %>
 
-<div class="justify-between bg-white border-b border-black top-0 left-0 right-0 z-50 pr-4 pl-4 h-20 sticky flex lg:pl-8 lg:pr-0 dark:bg-black dark:border-b-white/[.35]">
+<div class="<%= header_container_classes %>">
   <div class="flex items-center">
     <%= logo_link(class: "flex items-center", image_class: "h-8") %>
 

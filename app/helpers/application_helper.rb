@@ -40,4 +40,20 @@ module ApplicationHelper
       format: "%n%u"
     )
   end
+
+  def body_background_class
+    ""
+  end
+
+  def discover_layout_context(params, request)
+    is_discover_layout = params[:layout] == 'discover'
+    is_discover_route = request.path.start_with?('/discover')
+    has_taxonomy = params[:from].present?
+
+    if is_discover_layout || is_discover_route
+      has_taxonomy ? 'discover-with-taxonomy' : 'discover-without-taxonomy'
+    else
+      'default'
+    end
+  end
 end

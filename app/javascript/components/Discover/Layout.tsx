@@ -110,6 +110,7 @@ export const Layout: React.FC<{
   className?: string;
   children: React.ReactNode;
   forceDomain?: boolean;
+  darkTheme?: boolean;
 }> = ({
   taxonomiesForNav,
   taxonomyPath,
@@ -120,12 +121,13 @@ export const Layout: React.FC<{
   className,
   children,
   forceDomain = false,
+  darkTheme = false,
 }) => {
   const { discoverDomain, appDomain } = useDomains();
   const isDesktop = useIsAboveBreakpoint("lg");
   const currentSeller = useCurrentSeller();
 
-  const rootTaxonomy = getRootTaxonomy(taxonomyPath);
+    const rootTaxonomy = getRootTaxonomy(taxonomyPath);
 
   setQuery ??= (query) => (window.location.href = Routes.discover_url({ host: discoverDomain, query }));
 
@@ -137,9 +139,14 @@ export const Layout: React.FC<{
 
   const userActionButtons = <UserActionButtons />;
 
-  const logoLink = (
+        const logoLink = (
     <a href={Routes.discover_path()} className="flex flex-shrink-0 items-center">
-      <img src={logo} alt="Gumroad" className="h-7 md:h-8 dark:invert" />
+      <img
+        src={logo}
+        alt="Gumroad"
+        className="h-7 md:h-8"
+        style={{ filter: darkTheme && !taxonomyPath ? "invert(1)" : undefined }}
+      />
     </a>
   );
   const searchBar = (
@@ -185,10 +192,10 @@ export const Layout: React.FC<{
   };
 
   return (
-    <main className={cx("discover", className)}>
+    <main className={cx("discover", className, { "dark-theme": darkTheme })}>
       <header
         className="hero border-t-0 lg:pe-16 lg:ps-16"
-        style={showTaxonomy && rootTaxonomy ? getRootTaxonomyCss(rootTaxonomy) : undefined}
+        style={darkTheme ? { backgroundColor: "#242423", color: "white" } : (showTaxonomy && rootTaxonomy ? getRootTaxonomyCss(rootTaxonomy) : undefined)}
       >
         <div className="flex w-full flex-col gap-4">
           {isDesktop ? (

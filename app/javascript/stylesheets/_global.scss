@@ -16,6 +16,7 @@
   border-width: 0;
   --border: #{$border};
   --outline: #{$outline};
+
   @for $i from 1 through length($grays) {
     --gray-#{$i}: #{nth($grays, $i)};
   }
@@ -42,6 +43,7 @@ body:not(.mac) * {
     width: size(0.75);
     background-color: gray(1);
   }
+
   &::-webkit-scrollbar-thumb {
     background-color: gray(3);
     border-radius: border-radius(2);
@@ -101,7 +103,7 @@ ul.inline {
   padding: 0;
   list-style: none;
 
-  & > li {
+  &>li {
     display: inline;
 
     &:not(:last-child)::after {
@@ -110,12 +112,12 @@ ul.inline {
   }
 }
 
-menu > li {
+menu>li {
   list-style: none;
 }
 
 details {
-  & > summary {
+  &>summary {
     all: inherit;
     outline: revert;
     display: grid;
@@ -133,7 +135,8 @@ details {
       margin-right: spacer(1);
     }
   }
-  &[open] > summary {
+
+  &[open]>summary {
     // details elements do not support display: grid in all browsers
     margin-bottom: spacer(2);
 
@@ -143,14 +146,15 @@ details {
   }
 
   &.toggle {
-    & > summary {
+    &>summary {
       grid-template-columns: 1fr;
 
       &::before {
         content: none;
       }
     }
-    &[open] > summary {
+
+    &[open]>summary {
       margin-bottom: 0;
     }
   }
@@ -222,6 +226,7 @@ details {
 
 a.stretched-link {
   text-decoration: none;
+
   &::before {
     @extend %stretched;
   }
@@ -307,4 +312,94 @@ meter {
 // the narrow parent container.
 .profiler-results * {
   max-width: unset;
+}
+
+// Logo color based on page context
+.logo-full img,
+.gumroad-logo img,
+img[alt="Gumroad"] {
+  // Default: black logo for light backgrounds
+  filter: none;
+}
+
+// Support for system dark mode preference (NON-discover pages only)
+@media (prefers-color-scheme: dark) {
+
+  // Only apply to non-discover pages
+  body:not(.discover-page) .logo-full img,
+  body:not(.discover-page) .gumroad-logo img,
+  body:not(.discover-page) img[alt="Gumroad"] {
+    filter: invert(1); // White logo in dark mode for regular pages
+  }
+}
+
+// Discover layout - consistent styling regardless of light/dark mode preference
+.discover.custom-sections {
+
+  // WITH taxonomy - always white background + dark logo (both light and dark mode)
+  &:not(.dark-theme) {
+    img[alt="Gumroad"] {
+      filter: none !important; // Always dark logo for taxonomy pages
+    }
+  }
+
+  // WITHOUT taxonomy - always dark gray background + white logo (both light and dark mode)
+  &.dark-theme {
+    img[alt="Gumroad"] {
+      filter: invert(1) !important; // Always white logo on dark gray background
+    }
+  }
+}
+
+// Remove border-top from product sections in discover layout
+.discover article.product>section>header:not(:first-child),
+.discover article.product>section>section:not(:first-child) {
+  border-top: none;
+}
+
+// Remove bottom border from CTA bar in discover layout to avoid visual conflicts
+.discover section[aria-label="Product information bar"] {
+  box-shadow: 0 var(--border-width) rgb(var(--color)) !important;
+}
+
+// Alternative targeting for the CTA bar border fix
+.discover .product-cta {
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+
+// Background styling for discover layout - consistent regardless of light/dark mode
+.discover.custom-sections {
+
+  // WITHOUT taxonomy: always dark-gray background styling
+  &.dark-theme {
+    header.hero {
+      background-color: #1a1a1a !important;
+      color: white !important;
+      border-color: #333;
+    }
+
+    .nav-button,
+    .link-button {
+      color: white;
+
+      &:hover {
+        background-color: #333;
+      }
+    }
+
+    .breadcrumbs {
+      a {
+        color: #ccc;
+
+        &[aria-current="page"] {
+          color: white;
+        }
+
+        &:hover {
+          color: white;
+        }
+      }
+    }
+  }
 }

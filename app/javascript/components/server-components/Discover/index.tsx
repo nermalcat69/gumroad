@@ -192,6 +192,7 @@ const Discover = (props: Props) => {
       taxonomyPath={taxonomyPath}
       taxonomiesForNav={props.taxonomies_for_nav}
       showTaxonomy
+      darkTheme={!taxonomyPath}
       onTaxonomyChange={(newTaxonomyPath) =>
         dispatch({
           type: "set-params",

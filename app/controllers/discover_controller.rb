@@ -41,7 +41,8 @@ class DiscoverController < ApplicationController
         request:,
         recommended_by: RecommendationType::GUMROAD_SEARCH_RECOMMENDATION,
         target: Product::Layout::DISCOVER,
-        query: params[:query]
+        query: params[:query],
+        from_taxonomy: taxonomy&.ancestry_path&.join("/")
       )
     end
 
@@ -99,7 +100,8 @@ class DiscoverController < ApplicationController
             product:,
             request:,
             recommended_by: RecommendationType::GUMROAD_DISCOVER_RECOMMENDATION,
-            target: Product::Layout::DISCOVER
+            target: Product::Layout::DISCOVER,
+            from_taxonomy: taxonomy&.ancestry_path&.join("/")
           )
         end
       end

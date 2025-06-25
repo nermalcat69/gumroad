@@ -193,7 +193,13 @@ class LinksController < ApplicationController
     end
 
     if params[:layout] == Product::Layout::DISCOVER
-      @discover_props = { taxonomy_path: @product.taxonomy&.ancestry_path&.join("/"), taxonomies_for_nav: }
+
+      source_taxonomy_slug = sanitized_source_taxonomy
+      @discover_props = {
+        taxonomy_path: @product.taxonomy&.ancestry_path&.join("/"),
+        source_taxonomy: source_taxonomy_slug,
+        taxonomies_for_nav: taxonomies_for_nav
+      }
     end
 
     set_noindex_header if !@product.alive?
@@ -261,7 +267,8 @@ class LinksController < ApplicationController
     # Else, redirect to the creator's subdomain, if it exists.
     # E.g., we want to redirect gumroad.com/l/id to username.gumroad.com/l/id
     creator_subdomain_with_protocol = @product.user.subdomain_with_protocol
-    target_host = !@is_user_custom_domain && creator_subdomain_with_protocol.present? ? creator_subdomain_with_protocol : request.host
+    creator_host = creator_subdomain_with_protocol.present? ? URI.parse(creator_subdomain_with_protocol).host : nil
+    target_host = !@is_user_custom_domain && creator_host.present? ? creator_host : request.host
     target_permalink = @product.general_permalink
 
     searched_id = params[:id] || params[:link_id]
@@ -691,5 +698,11 @@ class LinksController < ApplicationController
       return if [Link::NATIVE_TYPE_COFFEE, Link::NATIVE_TYPE_BUNDLE].include?(@product.native_type)
 
       @product.toggle_community_chat!(enabled)
+    end
+
+    def sanitized_source_taxonomy
+      return @product.taxonomy&.ancestry_path&.join("/") unless params[:from].present?
+
+      params[:from].downcase.gsub(/[&\s]+/, '-')
     end
 end
