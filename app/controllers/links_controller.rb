@@ -714,6 +714,9 @@ class LinksController < ApplicationController
       return nil unless params[:from].present?
 
       return nil unless params[:from].is_a?(String)
+
+      return nil if params[:from].downcase == "all"
+
       params[:from].downcase.gsub(/[&\s]+/, '-')
     end
 end
