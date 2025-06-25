@@ -16,7 +16,8 @@ const colorMap: Record<string, string> = {
 
 export function getRootTaxonomyCss(slug: RootTaxonomySlug) {
   const colorName = rootTaxonomies[slug].color;
-  return { backgroundColor: colorMap[colorName], color: "black", "--color": "0 0 0" };
+  const backgroundColor = colorMap[colorName] ?? "#ffc900";
+  return { backgroundColor, color: "black", "--color": "0 0 0" };
 }
 
 export function getRootTaxonomyImage(slug: RootTaxonomySlug) {

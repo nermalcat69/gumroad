@@ -200,6 +200,8 @@ class LinksController < ApplicationController
         source_taxonomy: source_taxonomy_slug,
         taxonomies_for_nav: taxonomies_for_nav
       }
+    elsif params[:layout] == "dashboard"
+      @dashboard_props = {}
     end
 
     set_noindex_header if !@product.alive?
@@ -267,7 +269,15 @@ class LinksController < ApplicationController
     # Else, redirect to the creator's subdomain, if it exists.
     # E.g., we want to redirect gumroad.com/l/id to username.gumroad.com/l/id
     creator_subdomain_with_protocol = @product.user.subdomain_with_protocol
-    creator_host = creator_subdomain_with_protocol.present? ? URI.parse(creator_subdomain_with_protocol).host : nil
+    creator_host = if creator_subdomain_with_protocol.present?
+      begin
+        URI.parse(creator_subdomain_with_protocol).host
+      rescue URI::InvalidURIError
+        nil
+      end
+    else
+      nil
+    end
     target_host = !@is_user_custom_domain && creator_host.present? ? creator_host : request.host
     target_permalink = @product.general_permalink
 
@@ -701,8 +711,9 @@ class LinksController < ApplicationController
     end
 
     def sanitized_source_taxonomy
-      return @product.taxonomy&.ancestry_path&.join("/") unless params[:from].present?
+      return nil unless params[:from].present?
 
+      return nil unless params[:from].is_a?(String)
       params[:from].downcase.gsub(/[&\s]+/, '-')
     end
 end
